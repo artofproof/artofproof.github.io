@@ -1,2 +1,0 @@
-# artofproof.github.io
-artofproof 
