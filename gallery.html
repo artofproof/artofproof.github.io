@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ArtOfProof • Virtual Gallery (A‑Frame)</title>
+  <!-- A‑Frame core -->
+  <script src="https://unpkg.com/aframe@1.5.0/dist/aframe.min.js"></script>
+  <!-- Extras: movement-controls, animation-mixer, etc. -->
+  <script src="https://unpkg.com/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
+  <!-- Handy sky/lighting presets -->
+  <script src="https://unpkg.com/aframe-environment-component@1.3.3/dist/aframe-environment-component.min.js"></script>
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; background: #0d0d0f; }
+    .hud {
+      position: fixed; inset: auto 0 12px 0; display: flex; justify-content: center; pointer-events: none;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; z-index: 10;
+    }
+    .dpad {
+      display: grid; grid-template-columns: 56px 56px 56px; grid-template-rows: 56px 56px 56px; gap: 8px;
+      pointer-events: auto; filter: drop-shadow(0 2px 10px rgba(0,0,0,.35));
+    }
+    .btn { width:56px; height:56px; border-radius:16px; border:none; background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(6px); color: #fff; font-weight:600; font-size:16px; cursor:pointer; }
+    .btn:active { background: rgba(255,255,255,0.18); }
+    .btn.hidden { visibility: hidden; }
+    .legend { position: fixed; left: 12px; bottom: 12px; color: #cfd3dc; font-size: 14px; opacity: .85; }
+    .legend kbd { background:#22252b; padding:2px 6px; border-radius:6px; border:1px solid #2c313a; }
+    .topbar { position: fixed; top: 8px; left: 8px; right: 8px; display:flex; align-items:center; gap:12px; color:#e8eaef; z-index:10; }
+    .pill { padding:8px 12px; border-radius:999px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(6px); font-size:14px; }
+    .link { color:#9ecbff; text-decoration: none; }
+    .link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <!-- Simple topbar/help -->
+  <div class="topbar">
+    <div class="pill">ArtOfProof • Virtual Gallery</div>
+    <div class="pill">Tip: Click once to lock mouse look. Use <kbd>WASD</kbd> / arrows on desktop. Use the on‑screen D‑pad on phones.</div>
+    <a class="pill link" target="_blank" rel="noopener" href="https://github.com/artofproof/artofproof.github.io/tree/main/art/images">Image Source Folder ↗</a>
+  </div>
+
+  <!-- On‑screen D‑pad for phones -->
+  <div class="hud">
+    <div class="dpad" id="dpad">
+      <button class="btn hidden"></button>
+      <button class="btn" data-dir="forward">▲</button>
+      <button class="btn hidden"></button>
+      <button class="btn" data-dir="left">◀</button>
+      <button class="btn" data-dir="stop">⏹</button>
+      <button class="btn" data-dir="right">▶</button>
+      <button class="btn hidden"></button>
+      <button class="btn" data-dir="back">▼</button>
+      <button class="btn hidden"></button>
+    </div>
+  </div>
+  <div class="legend">Desktop: <kbd>W</kbd>/<kbd>A</kbd>/<kbd>S</kbd>/<kbd>D</kbd> • <kbd>Mouse</kbd> look • <kbd>F</kbd> to enter VR if supported</div>
+
+  <a-scene renderer="colorManagement: true; physicallyCorrectLights: true;" background="color:#0e0f13">
+
+    <!-- Nice environment preset (subtle) -->
+    <a-entity environment="preset: arches; groundColor: #0f1116; groundYScale: 2; groundTexture: none; dressing: none; skyType: gradient; horizonColor: #1c1f27; skyColor: #0b0c10"></a-entity>
+
+    <!-- Lights -->
+    <a-entity light="type: ambient; intensity: 0.45; color: #ffffff"></a-entity>
+    <a-entity light="type: directional; intensity: 0.65" position="2 4 1"></a-entity>
+
+    <!-- Room (simple modern gallery) -->
+    <a-entity id="room">
+      <!-- floor -->
+      <a-plane position="0 0 0" rotation="-90 0 0" width="24" height="14" color="#151821" shadow="receive: true"></a-plane>
+      <!-- ceiling -->
+      <a-plane position="0 4 0" rotation="90 0 0" width="24" height="14" color="#0f1118"></a-plane>
+      <!-- walls -->
+      <a-plane position="0 2 -7" rotation="0 0 0" width="24" height="4" color="#141720"></a-plane>
+      <a-plane position="0 2 7" rotation="0 180 0" width="24" height="4" color="#141720"></a-plane>
+      <a-plane position="-12 2 0" rotation="0 90 0" width="14" height="4" color="#141720"></a-plane>
+      <a-plane position="12 2 0" rotation="0 -90 0" width="14" height="4" color="#141720"></a-plane>
+    </a-entity>
+
+    <!-- Camera rig with smooth movement & mobile look support -->
+    <a-entity id="rig" movement-controls="fly: false; speed: 0.6;" position="0 1.6 3">
+      <a-entity id="camera" camera look-controls="pointerLockEnabled: true; touchEnabled: true; magicWindowTrackingEnabled: true">
+        <a-entity cursor="rayOrigin: mouse" raycaster="objects: .interactable"></a-entity>
+      </a-entity>
+    </a-entity>
+
+    <!-- Asset container populated at runtime -->
+    <a-assets id="assets"></a-assets>
+
+    <!-- A helper label over the entrance -->
+    <a-entity position="0 3.5 5" text="value: ArtOfProof Gallery; color: #e7ebf4; align: center; width: 8;"></a-entity>
+
+  </a-scene>
+
+  <script>
+    // --- Settings ---
+    const GITHUB_API = 'https://api.github.com/repos/artofproof/artofproof.github.io/contents/art/images';
+    const SUPPORTED = [".png", ".jpg", ".jpeg", ".webp", ".gif"];
+    const FRAME = {
+      artWidth: 2.0,     // Base width of the artwork plane in meters
+      matMargin: 0.10,   // White mat border around art (m)
+      frameMargin: 0.12, // Wooden frame size beyond mat (m)
+      artHeightMax: 1.6, // Clamp art height to keep things uniform
+      hangHeight: 1.6    // Center height from floor (eye level)
+    };
+
+    // Wall anchors for automatic layout (positions & rotations)
+    const WALLS = [
+      { name: 'north', origin: {x:-10, y:FRAME.hangHeight, z:-6.85}, dir: {x:1, z:0}, rot: '0 0 0', span: 20 },   // back wall
+      { name: 'south', origin: {x:-10, y:FRAME.hangHeight, z: 6.85}, dir: {x:1, z:0}, rot: '0 180 0', span: 20 }, // front wall
+      { name: 'west',  origin: {x:-6.85, y:FRAME.hangHeight, z:-6}, dir: {x:0, z:1}, rot: '0 90 0', span: 12 },   // left wall
+      { name: 'east',  origin: {x: 6.85, y:FRAME.hangHeight, z:-6}, dir: {x:0, z:1}, rot: '0 -90 0', span: 12 }   // right wall
+    ];
+
+    async function loadImages() {
+      try {
+        const res = await fetch(GITHUB_API, { headers: { 'Accept': 'application/vnd.github+json' } });
+        if (!res.ok) throw new Error('GitHub API error ' + res.status);
+        const list = await res.json();
+        const imgs = list.filter(it => it.type === 'file' && SUPPORTED.some(ext => it.name.toLowerCase().endsWith(ext)));
+        if (!imgs.length) { console.warn('No images found in folder.'); return []; }
+        return imgs.map((it, i) => ({ id: 'art' + i, name: it.name, src: it.download_url }));
+      } catch (e) {
+        console.error(e);
+        return [];
+      }
+    }
+
+    function addAssetImages(imgs) {
+      const assets = document.getElementById('assets');
+      imgs.forEach(img => {
+        const el = document.createElement('img');
+        el.setAttribute('id', img.id);
+        el.setAttribute('crossorigin', 'anonymous');
+        el.setAttribute('src', img.src);
+        assets.appendChild(el);
+      });
+    }
+
+    function makeFramedArt({id, name}, position, rotation) {
+      // Container
+      const group = document.createElement('a-entity');
+      group.setAttribute('position', position);
+      group.setAttribute('rotation', rotation);
+
+      // Art plane (size will be adjusted on materialtextureloaded)
+      const art = document.createElement('a-plane');
+      art.setAttribute('class', 'interactable');
+      art.setAttribute('material', `src: #${id}; metalness: 0.2; roughness: 0.7`);
+      art.setAttribute('shadow', 'cast: true; receive: false');
+
+      // Mat (slightly larger white plane behind art)
+      const mat = document.createElement('a-plane');
+      mat.setAttribute('color', '#f5f5f0');
+      mat.setAttribute('position', '0 0 -0.005');
+      mat.setAttribute('shadow', 'cast: false; receive: false');
+
+      // Frame (wooden) – another larger plane behind mat
+      const frame = document.createElement('a-plane');
+      frame.setAttribute('color', '#8B6A49');
+      frame.setAttribute('position', '0 0 -0.01');
+      frame.setAttribute('shadow', 'cast: false; receive: false');
+
+      // Caption label
+      const label = document.createElement('a-entity');
+      label.setAttribute('position', '0 -1.1 0');
+      label.setAttribute('text', `value: ${name}; color: #cfd3dc; align: center; width: 4; wrapCount: 24;`);
+
+      // When the texture is loaded, size planes proportionally
+      art.addEventListener('materialtextureloaded', () => {
+        const tex = art.components.material.material.map.image;
+        let w = FRAME.artWidth;
+        let h = w * (tex.height / tex.width);
+        if (h > FRAME.artHeightMax) { h = FRAME.artHeightMax; w = h * (tex.width / tex.height); }
+        art.setAttribute('width', w);
+        art.setAttribute('height', h);
+
+        const matW = w + FRAME.matMargin * 2;
+        const matH = h + FRAME.matMargin * 2;
+        mat.setAttribute('width', matW);
+        mat.setAttribute('height', matH);
+
+        const frameW = matW + FRAME.frameMargin * 2;
+        const frameH = matH + FRAME.frameMargin * 2;
+        frame.setAttribute('width', frameW);
+        frame.setAttribute('height', frameH);
+      });
+
+      group.appendChild(frame);
+      group.appendChild(mat);
+      group.appendChild(art);
+      group.appendChild(label);
+      return group;
+    }
+
+    function layoutImages(imgs) {
+      const scene = document.querySelector('a-scene');
+      if (!imgs.length) return;
+
+      // Decide a max per wall based on count
+      const perWall = Math.ceil(imgs.length / WALLS.length);
+      let idx = 0;
+
+      WALLS.forEach(wall => {
+        const count = Math.min(perWall, imgs.length - idx);
+        if (count <= 0) return;
+        const spacing = wall.span / (count + 1);
+        for (let i = 0; i < count; i++, idx++) {
+          const img = imgs[idx];
+          const x = wall.origin.x + wall.dir.x * spacing * (i + 1);
+          const z = wall.origin.z + wall.dir.z * spacing * (i + 1);
+          const position = `${x} ${FRAME.hangHeight} ${z}`;
+          const rotation = wall.rot;
+          const framed = makeFramedArt(img, position, rotation);
+          scene.appendChild(framed);
+        }
+      });
+
+      // Add a central bench (for vibes ✨)
+      const bench = document.createElement('a-box');
+      bench.setAttribute('position', '0 0.35 0');
+      bench.setAttribute('depth', '0.6');
+      bench.setAttribute('height', '0.7');
+      bench.setAttribute('width', '2.2');
+      bench.setAttribute('color', '#2a2f3b');
+      bench.setAttribute('shadow', 'cast: true; receive: true');
+      document.querySelector('a-scene').appendChild(bench);
+    }
+
+    // Simple D‑pad movement for touch devices
+    (function setupDpad() {
+      const rig = () => document.getElementById('rig');
+      const dpad = document.getElementById('dpad');
+      let dir = {x:0, z:0};
+      let raf;
+
+      function step() {
+        const e = rig();
+        if (!e) { raf = requestAnimationFrame(step); return; }
+        const spd = 0.03; // meters per frame (~60 fps)
+        const cam = document.getElementById('camera');
+        const rotY = (cam.getAttribute('rotation')?.y || 0) * Math.PI/180;
+        // Transform input by camera heading
+        const forwardX = -Math.sin(rotY), forwardZ = -Math.cos(rotY);
+        const rightX = Math.cos(rotY), rightZ = -Math.sin(rotY);
+        const dx = forwardX * dir.z * spd + rightX * dir.x * spd;
+        const dz = forwardZ * dir.z * spd + rightZ * dir.x * spd;
+        const p = e.getAttribute('position');
+        e.setAttribute('position', {x: p.x + dx, y: p.y, z: p.z + dz});
+        raf = requestAnimationFrame(step);
+      }
+
+      function setDir(name){
+        if (name === 'left') dir = {x:-1, z:0};
+        else if (name === 'right') dir = {x:1, z:0};
+        else if (name === 'forward') dir = {x:0, z:1};
+        else if (name === 'back') dir = {x:0, z:-1};
+        else dir = {x:0, z:0};
+      }
+
+      dpad.addEventListener('touchstart', e => {
+        const t = e.target.closest('button');
+        if (!t) return;
+        setDir(t.dataset.dir);
+        if (!raf) raf = requestAnimationFrame(step);
+      }, {passive:true});
+      dpad.addEventListener('touchend', () => { setDir('stop'); }, {passive:true});
+      dpad.addEventListener('mousedown', e => {
+        const t = e.target.closest('button');
+        if (!t) return;
+        setDir(t.dataset.dir);
+        if (!raf) raf = requestAnimationFrame(step);
+      });
+      window.addEventListener('mouseup', () => { setDir('stop'); });
+    })();
+
+    // Boot
+    (async function init() {
+      const imgs = await loadImages();
+      addAssetImages(imgs);
+      layoutImages(imgs);
+      console.log(`Loaded ${imgs.length} images.`);
+    })();
+  </script>
+</body>
+</html>
