@@ -3,99 +3,80 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ArtOfProof VR Gallery</title>
-
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- A-Frame -->
+  <title>Cyberpunk VR Art Gallery</title>
   <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.0.0/dist/aframe-extras.min.js"></script>
   <style>
     body {
       margin: 0;
-      background-color: #f8f9fa;
+      overflow: hidden;
+      background: #1a1a1a;
     }
-    .aframe-container {
-      height: 600px;
-      width: 100%;
-      margin-bottom: 2rem;
+    a-scene {
+      display: block;
     }
-    .art-card img {
-      max-width: 100%;
-      border-radius: 0.5rem;
+    .frame {
+      border: 0.05 0.05 0.05 0.05;
+      color: #00ff99;
+      emissive: #00ff99;
+      emissive-intensity: 0.8;
+      opacity: 0.9;
+    }
+    .artwork {
+      width: 2.5;
+      height: 3;
+      shadow: true;
+    }
+    .floor {
+      width: 100;
+      height: 100;
+      color: #222222;
+      shadow: true;
+    }
+    .ambient-light {
+      intensity: 0.4;
+      color: #ffffff;
+    }
+    .directional-light {
+      intensity: 1.5;
+      color: #ff007f;
+      position: 2 4 -3;
+      cast-shadow: true;
+    }
+    .neon-sign {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2;
+      color: #00ff99;
+      position: 0 6 -5;
+      rotation: 0 0 0;
+      scale: 2 2 2;
     }
   </style>
 </head>
 <body>
+  <a-scene embedded shadow="type: pcfsoft">
+    <!-- Lighting -->
+    <a-light class="ambient-light" type="ambient"></a-light>
+    <a-light class="directional-light" type="directional"></a-light>
 
-  <!-- Header -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">ArtOfProof VR Gallery</a>
-    </div>
-  </nav>
+    <!-- Camera and Cursor -->
+    <a-entity camera look-controls>
+      <a-cursor fuse="true" fuse-timeout="1500" geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03" material="color: black; shader: flat; opacity: 0.5" position="0 0 -1" raycaster="objects: .clickable"></a-cursor>
+    </a-entity>
 
-  <!-- VR Gallery -->
-  <div class="aframe-container">
-    <a-scene embedded background="color: #f0f0f0">
-      <!-- Lighting -->
-      <a-light type="directional" position="2 4 -3" intensity="1.5" cast-shadow="true"></a-light>
-      <a-light type="ambient" color="#fff" intensity="0.5"></a-light>
+    <!-- Gallery Floor -->
+    <a-plane class="floor" position="0 0 0" rotation="-90 0 0"></a-plane>
 
-      <!-- Camera & Cursor -->
-      <a-entity camera look-controls>
-        <a-cursor
-          fuse="true"
-          fuse-timeout="1500"
-          geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
-          material="color: black; shader: flat; opacity: 0.5"
-          position="0 0 -1"
-          raycaster="objects: .clickable">
-        </a-cursor>
-      </a-entity>
+    <!-- Neon Sign -->
+    <a-text class="neon-sign" value="Cyberpunk VR Art Gallery"></a-text>
 
-      <!-- Gallery Walls -->
-      <a-box position="0 1.5 -3" width="10" height="3" depth="0.1" color="#fff" shadow="true"></a-box>
-      <a-box position="0 1.5 3" width="10" height="3" depth="0.1" color="#fff" shadow="true"></a-box>
-      <a-box position="-5 1.5 0" width="0.1" height="3" depth="6" color="#fff" shadow="true"></a-box>
-      <a-box position="5 1.5 0" width="0.1" height="3" depth="6" color="#fff" shadow="true"></a-box>
-
-      <!-- Artworks -->
-      <a-image src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/1.jpg" position="-3 1.5 -2" width="2" height="2.5" class="clickable" shadow="true"></a-image>
-      <a-image src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/2.jpg" position="-1 1.5 -2" width="2" height="2.5" class="clickable" shadow="true"></a-image>
-      <a-image src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/3.jpg" position="1 1.5 -2" width="2" height="2.5" class="clickable" shadow="true"></a-image>
-      <a-image src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/4.jpg" position="3 1.5 -2" width="2" height="2.5" class="clickable" shadow="true"></a-image>
-      <a-image src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/5.jpg" position="-3 1.5 1" width="2" height="2.5" class="clickable" shadow="true"></a-image>
-      <a-image src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/6.jpg" position="-1 1.5 1" width="2" height="2.5" class="clickable" shadow="true"></a-image>
-    </a-scene>
-  </div>
-
-  <!-- Image Grid (Optional) -->
-  <div class="container mb-5">
-    <div class="row g-4">
-      <div class="col-md-4 art-card">
-        <img src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/1.jpg" alt="Art 1">
-      </div>
-      <div class="col-md-4 art-card">
-        <img src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/2.jpg" alt="Art 2">
-      </div>
-      <div class="col-md-4 art-card">
-        <img src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/3.jpg" alt="Art 3">
-      </div>
-      <div class="col-md-4 art-card">
-        <img src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/4.jpg" alt="Art 4">
-      </div>
-      <div class="col-md-4 art-card">
-        <img src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/5.jpg" alt="Art 5">
-      </div>
-      <div class="col-md-4 art-card">
-        <img src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/6.jpg" alt="Art 6">
-      </div>
-    </div>
-  </div>
-
-  <!-- Bootstrap JS Bundle -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Artworks -->
+    <a-image class="artwork clickable" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/1.jpg" position="-3 1.5 -5" class="frame"></a-image>
+    <a-image class="artwork clickable" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/2.jpg" position="-0.5 1.5 -5" class="frame"></a-image>
+    <a-image class="artwork clickable" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/3.jpg" position="2 1.5 -5" class="frame"></a-image>
+    <a-image class="artwork clickable" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/4.jpg" position="-3 1.5 -8" class="frame"></a-image>
+    <a-image class="artwork clickable" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/5.jpg" position="-0.5 1.5 -8" class="frame"></a-image>
+    <a-image class="artwork clickable" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/6.jpg" position="2 1.5 -8" class="frame"></a-image>
+  </a-scene>
 </body>
 </html>
