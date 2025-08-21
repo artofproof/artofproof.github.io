@@ -1,82 +1,112 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cyberpunk VR Art Gallery</title>
-  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.0.0/dist/aframe-extras.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background: #1a1a1a;
-    }
-    a-scene {
-      display: block;
-    }
-    .frame {
-      border: 0.05 0.05 0.05 0.05;
-      color: #00ff99;
-      emissive: #00ff99;
-      emissive-intensity: 0.8;
-      opacity: 0.9;
-    }
-    .artwork {
-      width: 2.5;
-      height: 3;
-      shadow: true;
-    }
-    .floor {
-      width: 100;
-      height: 100;
-      color: #222222;
-      shadow: true;
-    }
-    .ambient-light {
-      intensity: 0.4;
-      color: #ffffff;
-    }
-    .directional-light {
-      intensity: 1.5;
-      color: #ff007f;
-      position: 2 4 -3;
-      cast-shadow: true;
-    }
-    .neon-sign {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 2;
-      color: #00ff99;
-      position: 0 6 -5;
-      rotation: 0 0 0;
-      scale: 2 2 2;
-    }
-  </style>
-</head>
-<body>
-  <a-scene embedded shadow="type: pcfsoft">
-    <!-- Lighting -->
-    <a-light class="ambient-light" type="ambient"></a-light>
-    <a-light class="directional-light" type="directional"></a-light>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>ArtOfProof • VR Gallery</title>
+    <link rel="icon" type="image/png" href="artofproof.png">
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <style>
+      /* Make the uploaded image stay fixed in the top-left */
+      #cornerLogo {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        width: 60px;   /* adjust size */
+        height: auto;
+        z-index: 1000; /* ensures it sits above A-Frame canvas */
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top-left logo -->
+    <img id="cornerLogo" src="invert.png" alt="Logo">
 
-    <!-- Camera and Cursor -->
-    <a-entity camera look-controls>
-      <a-cursor fuse="true" fuse-timeout="1500" geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03" material="color: black; shader: flat; opacity: 0.5" position="0 0 -1" raycaster="objects: .clickable"></a-cursor>
-    </a-entity>
+    <a-scene cursor="rayOrigin: mouse; fuse: false" raycaster="objects: .raycastable">
 
-    <!-- Gallery Floor -->
-    <a-plane class="floor" position="0 0 0" rotation="-90 0 0"></a-plane>
+      <a-assets>
+        <!-- Artworks -->
+        <img id="art0" crossorigin="anonymous" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/114b7eb2-aa73-4012-a384-dfc5cb8bd0a6.png">
+        <img id="art1" crossorigin="anonymous" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/205b28f0-a623-48e8-996a-04fd19c9df6a.png">
+        <img id="art2" crossorigin="anonymous" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/4cd72a9c-ab47-460e-aa98-9dda68d7bfb2.png">
+        <img id="art3" crossorigin="anonymous" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/8e48651d-fd26-4be3-9cec-7dec14b47bfd.png">
+        <img id="art4" crossorigin="anonymous" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/e37460ef-dbb5-43a2-b844-d74ebed1c4bf.png">
+        <img id="art5" crossorigin="anonymous" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/npub1q39st7du4ww4j8tr389nlw0snrwg5ctwvcdsdmhqy3prcesrwjvq6vnzug.png">
 
-    <!-- Neon Sign -->
-    <a-text class="neon-sign" value="Cyberpunk VR Art Gallery"></a-text>
+        <!-- Textures -->
+        <img id="grassTexture" src="https://cdn.pixabay.com/photo/2015/03/26/09/54/grass-690300_1280.jpg">
+        <img id="skyTexture" src="https://cdn.pixabay.com/photo/2016/03/09/09/30/sky-1245953_1280.jpg">
+        <img id="logo" src="artofproof.png">
+      </a-assets>
 
-    <!-- Artworks -->
-    <a-image class="artwork clickable" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/1.jpg" position="-3 1.5 -5" class="frame"></a-image>
-    <a-image class="artwork clickable" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/2.jpg" position="-0.5 1.5 -5" class="frame"></a-image>
-    <a-image class="artwork clickable" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/3.jpg" position="2 1.5 -5" class="frame"></a-image>
-    <a-image class="artwork clickable" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/4.jpg" position="-3 1.5 -8" class="frame"></a-image>
-    <a-image class="artwork clickable" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/5.jpg" position="-0.5 1.5 -8" class="frame"></a-image>
-    <a-image class="artwork clickable" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/6.jpg" position="2 1.5 -8" class="frame"></a-image>
-  </a-scene>
-</body>
+      <!-- Sky -->
+      <a-sky src="#skyTexture" rotation="0 -90 0"></a-sky>
+
+      <!-- Grass Floor -->
+      <a-plane rotation="-90 0 0" width="50" height="50" src="#grassTexture" repeat="25 25"></a-plane>
+
+      <!-- Gallery Row -->
+      <a-entity id="gallery" position="0 1.6 -3">
+        <a-entity id="art0-entity" position="-3 0 0" class="raycastable"
+                  geometry="primitive: plane; width: 0.86; height: 1.16"
+                  material="src: #art0; side: double"
+                  onclick="showInfo('art0')"></a-entity>
+        <a-entity id="art1-entity" position="-1.8 0 0" class="raycastable"
+                  geometry="primitive: plane; width: 0.86; height: 1.16"
+                  material="src: #art1; side: double"
+                  onclick="showInfo('art1')"></a-entity>
+        <a-entity id="art2-entity" position="-0.6 0 0" class="raycastable"
+                  geometry="primitive: plane; width: 0.86; height: 1.16"
+                  material="src: #art2; side: double"
+                  onclick="showInfo('art2')"></a-entity>
+        <a-entity id="art3-entity" position="0.6 0 0" class="raycastable"
+                  geometry="primitive: plane; width: 0.86; height: 1.16"
+                  material="src: #art3; side: double"
+                  onclick="showInfo('art3')"></a-entity>
+        <a-entity id="art4-entity" position="1.8 0 0" class="raycastable"
+                  geometry="primitive: plane; width: 0.86; height: 1.16"
+                  material="src: #art4; side: double"
+                  onclick="showInfo('art4')"></a-entity>
+        <a-entity id="art5-entity" position="3 0 0" class="raycastable"
+                  geometry="primitive: plane; width: 0.86; height: 1.16"
+                  material="src: #art5; side: double"
+                  onclick="showInfo('art5')"></a-entity>
+      </a-entity>
+
+      <!-- Info Panel for Sky -->
+      <a-entity id="infoPanel" visible="false">
+        <a-plane id="info-img" position="0 10 -10" width="5" height="6" material="src: #art0; side: double"></a-plane>
+      </a-entity>
+
+      <!-- Camera with WASD -->
+      <a-entity id="cameraRig" position="0 1.6 0">
+        <a-entity camera wasd-controls look-controls></a-entity>
+      </a-entity>
+
+      <script>
+        const artIds = ["art0","art1","art2","art3","art4","art5"];
+        let currentArt = "";
+        const infoPanel = document.querySelector("#infoPanel");
+        const camera = document.querySelector("[camera]");
+
+        function showInfo(id){
+          currentArt = id;
+          const artEl = document.querySelector(`#${id}-entity`);
+          const src = document.querySelector(`#${id}`).getAttribute('src');
+          document.querySelector("#info-img").setAttribute("material","src: " + src + "; side: double");
+          infoPanel.setAttribute("visible","true");
+        }
+
+        function hideInfo(){
+          infoPanel.setAttribute("visible","false");
+        }
+
+        // ESC key closes panel
+        window.addEventListener('keydown', (e) => {
+          if(e.key === "Escape"){
+            hideInfo();
+          }
+        });
+      </script>
+    </a-scene>
+  </body>
 </html>
