@@ -6,14 +6,17 @@
     <link rel="icon" type="image/png" href="artofproof.png">
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <style>
-      /* Make the uploaded image stay fixed in the top-left */
+      body {
+        margin: 0;
+        background: black; /* background color while loading */
+      }
       #cornerLogo {
         position: fixed;
         top: 10px;
         left: 10px;
-        width: 60px;   /* adjust size */
+        width: 60px;
         height: auto;
-        z-index: 1000; /* ensures it sits above A-Frame canvas */
+        z-index: 1000;
       }
     </style>
   </head>
@@ -21,7 +24,9 @@
     <!-- Top-left logo -->
     <img id="cornerLogo" src="invert.png" alt="Logo">
 
-    <a-scene cursor="rayOrigin: mouse; fuse: false" raycaster="objects: .raycastable">
+    <a-scene loading-screen="enabled: false"
+             cursor="rayOrigin: mouse; fuse: false"
+             raycaster="objects: .raycastable">
 
       <a-assets>
         <!-- Artworks -->
@@ -72,12 +77,13 @@
                   onclick="showInfo('art5')"></a-entity>
       </a-entity>
 
-      <!-- Info Panel for Sky -->
+      <!-- Info Panel -->
       <a-entity id="infoPanel" visible="false">
-        <a-plane id="info-img" position="0 10 -10" width="5" height="6" material="src: #art0; side: double"></a-plane>
+        <a-plane id="info-img" position="0 10 -10" width="5" height="6"
+                 material="src: #art0; side: double"></a-plane>
       </a-entity>
 
-      <!-- Camera with WASD -->
+      <!-- Camera -->
       <a-entity id="cameraRig" position="0 1.6 0">
         <a-entity camera wasd-controls look-controls></a-entity>
       </a-entity>
@@ -86,13 +92,13 @@
         const artIds = ["art0","art1","art2","art3","art4","art5"];
         let currentArt = "";
         const infoPanel = document.querySelector("#infoPanel");
-        const camera = document.querySelector("[camera]");
 
         function showInfo(id){
           currentArt = id;
-          const artEl = document.querySelector(`#${id}-entity`);
           const src = document.querySelector(`#${id}`).getAttribute('src');
-          document.querySelector("#info-img").setAttribute("material","src: " + src + "; side: double");
+          document.querySelector("#info-img").setAttribute(
+            "material","src: " + src + "; side: double"
+          );
           infoPanel.setAttribute("visible","true");
         }
 
