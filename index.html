@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>artofproof</title>
 
     <!-- Favicons -->
@@ -19,6 +20,7 @@
         margin: 0;
         background: black;
         font-family: sans-serif;
+        touch-action: none; /* Prevents scroll interference */
       }
       #cornerLogo {
         position: fixed;
@@ -31,8 +33,10 @@
     </style>
   </head>
   <body>
-    <!-- Top-left logo -->
-    <img id="cornerLogo" src="invert.png" alt="Logo">
+    <!-- Top-left logo linked to whitepaper -->
+    <a href="https://raw.githubusercontent.com/artofproof/artofproof.github.io/refs/heads/main/whitepaper.md" target="_blank">
+      <img id="cornerLogo" src="invert.png" alt="Logo">
+    </a>
 
     <a-scene loading-screen="enabled: false"
              cursor="rayOrigin: mouse; fuse: false"
@@ -56,7 +60,7 @@
       <!-- Sky -->
       <a-sky src="#skyTexture" rotation="0 -90 0"></a-sky>
 
-      <!-- Grass Floor (raycastable so users can tap it) -->
+      <!-- Grass Floor -->
       <a-plane id="ground" class="raycastable" rotation="-90 0 0" width="50" height="50"
                src="#grassTexture" repeat="25 25"></a-plane>
 
@@ -90,15 +94,12 @@
 
       <!-- Info Panel -->
       <a-entity id="infoPanel" visible="false">
-        <!-- Enlarged Image -->
         <a-plane id="info-img" position="-3 10 -10" width="5" height="6"
                  material="src: #art0; side: double"></a-plane>
 
-        <!-- Description Text to the RIGHT of the image -->
         <a-text id="info-text" value="" position="3 12 -10" align="left"
                 width="12" color="white" wrap-count="60"></a-text>
 
-        <!-- Clickable Link (npub) -->
         <a-entity id="info-link-entity" position="3 10 -10" class="raycastable"
                   geometry="primitive: plane; height: 0.4; width: 9"
                   material="transparent: true; opacity: 0">
@@ -111,11 +112,8 @@
 
       <!-- Camera Rig -->
       <a-entity id="cameraRig" position="0 1.6 0">
-        <a-entity 
-          id="camera" 
-          camera 
-          wasd-controls
-          look-controls="touchEnabled: true; magicWindowTrackingEnabled: true;">
+        <a-entity id="camera" camera wasd-controls
+                  look-controls="touchEnabled: true; magicWindowTrackingEnabled: true;">
         </a-entity>
       </a-entity>
 
@@ -127,10 +125,17 @@
         const infoImg = document.querySelector("#info-img");
         const cameraRig = document.querySelector("#cameraRig");
 
-        // Descriptions + Links
         const descriptions = {
-          art0: { text: "Artwork 0 description goes here...", link: "#", npub: "" },
-          art1: { text: "Artwork 1 description goes here...", link: "#", npub: "" },
+          art0: {
+            text: "The Protocol Punisher - Just as Frank Castle wages an unyielding war against crime and corruption, Bitcoin’s protocol enforces the incorruptible rules of a new financial order. There are no plea bargains, no backroom deals, no central authority to bend its will — only the impartial law of mathematics. The Punisher’s relentless pursuit of justice mirrors the Bitcoin whitepaper’s vision: a system where fraud is exposed, trust is unnecessary, and every transaction is judged without prejudice.",
+            link: "https://nosta.me/npub14u6x8fd4kfh3ygzrnh5ny4qyeeggswr55v0z93hdme8qttvm2t9qwk9jme",
+            npub: "npub14u6x8fd4kfh3ygzrnh5ny4qyeeggswr55v0z93hdme8qttvm2t9qwk9jme"
+          },
+          art1: {
+            text: "Cipher Punk Exodus - In Cipher Punk Exodus, the chaotic energy of AKIRA’s Neo-Tokyo collides with the radical vision of Bitcoin’s whitepaper. Just as Kaneda and his crew fought against corrupt systems of power, the cypherpunks engineered a rebellion in code—an exodus from centralized control into a world governed by mathematics and peer-to-peer consensus. The artwork captures that raw transition, where neon-soaked streets echo with the hum of defiance, and every block mined is a strike against oppression.",
+            link: "https://nosta.me/npub1vjck0yzrhzn4p04a9354nz3zsnrf0stmuu0a2nknrwjevmun2d2s6cmral",
+            npub: "npub1vjck0yzrhzn4p04a9354nz3zsnrf0stmuu0a2nknrwjevmun2d2s6cmral"
+          },
           art2: {
             text: "Code of Law - channels the spirit of Judge Dredd as the embodiment of Bitcoin’s unbreakable rules. In the Bitcoin whitepaper, consensus acts as the supreme authority — a protocol that cannot be bribed, corrupted, or persuaded. Like Dredd himself, the network enforces its law with precision and finality, ensuring that no transaction outside the rules can ever stand. This artwork captures that stark truth: in Bitcoin, justice is not human but mathematical, not arbitrary but absolute. The code is the law, and the law is incorruptible.",
             link: "https://nosta.me/npub1ppfv7rd6gq38jp6n3elgl6yydmtydp2zcjv32cgp9zyvcttpz59q7v7xrx",
@@ -171,16 +176,10 @@
           infoPanel.setAttribute("visible","true");
         }
 
-        function hideInfo(){
-          infoPanel.setAttribute("visible","false");
-        }
+        function hideInfo(){ infoPanel.setAttribute("visible","false"); }
 
-        // ESC closes panel
-        window.addEventListener('keydown', (e) => {
-          if(e.key === "Escape"){ hideInfo(); }
-        });
+        window.addEventListener('keydown', (e) => { if(e.key === "Escape"){ hideInfo(); } });
 
-        // Tap-to-move
         const ground = document.querySelector("#ground");
         ground.addEventListener("click", (e) => {
           const intersect = e.detail.intersection;
@@ -191,9 +190,8 @@
         });
 
         function moveCameraTo(target) {
-          // Smooth movement
           const start = cameraRig.object3D.position.clone();
-          const end = new THREE.Vector3(target.x, start.y, target.z); // keep same height
+          const end = new THREE.Vector3(target.x, start.y, target.z);
           let progress = 0;
           function animate() {
             progress += 0.02;
