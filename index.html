@@ -20,7 +20,7 @@
         margin: 0;
         background: black;
         font-family: sans-serif;
-        touch-action: none; /* prevents scrolling while interacting with the joystick */
+        touch-action: none;
       }
       #cornerLogo {
         position: fixed;
@@ -30,82 +30,15 @@
         height: auto;
         z-index: 1000;
       }
-
-      /* Movement controls (left) */
-      #mobileControls {
-        position: fixed;
-        bottom: 20px;
-        left: 20px;
-        display: none; /* shown on touch devices */
-        flex-direction: column;
-        align-items: center;
-        gap: 7px;
-        z-index: 10010;
-        -webkit-tap-highlight-color: transparent;
-      }
-      #mobileControls .btn-row { display:flex; gap:7px; }
-      .move-btn {
-        width: 56px;
-        height: 56px;
-        font-size: 22px;
-        border-radius: 10px;
-        border: none;
-        background: rgba(255,255,255,0.85);
-        box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-        touch-action: none;
-      }
-
-      /* Look joystick (right) */
-      #lookJoystick {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.12);
-        display: none;
-        touch-action: none;
-        z-index: 10010;
-      }
-      #joystickHandle {
-        position: absolute;
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.92);
-        top: 38px;
-        left: 38px;
-        transform: translate(0,0);
-        transition: left 0.2s cubic-bezier(.22,.9,.22,1), top 0.2s cubic-bezier(.22,.9,.22,1);
-        touch-action: none;
-      }
-
-      /* small tweak so A-Frame canvas doesn't steal pointer when interacting UI */
-      a-scene { touch-action: none; }
     </style>
   </head>
   <body>
-    <!-- Top-left logo linked to whitepaper -->
-    <a href="https://raw.githubusercontent.com/artofproof/artofproof.github.io/refs/heads/main/whitepaper.md" target="_blank">
+    <!-- Top-left logo linked to PDF -->
+    <a href="https://github.com/artofproof/artofproof.github.io/blob/ff6357be5fc6f6f6aa748125a2e5845a14545fad/AOPWP.pdf" target="_blank">
       <img id="cornerLogo" src="invert.png" alt="Logo">
     </a>
 
-    <!-- Mobile movement controls -->
-    <div id="mobileControls" aria-hidden="true">
-      <button class="move-btn" data-dx="0" data-dz="-1" aria-label="Forward">⬆️</button>
-      <div class="btn-row">
-        <button class="move-btn" data-dx="-1" data-dz="0" aria-label="Left">⬅️</button>
-        <button class="move-btn" data-dx="1" data-dz="0" aria-label="Right">➡️</button>
-      </div>
-      <button class="move-btn" data-dx="0" data-dz="1" aria-label="Back">⬇️</button>
-    </div>
-
-    <!-- Look joystick -->
-    <div id="lookJoystick" aria-hidden="true">
-      <div id="joystickHandle"></div>
-    </div>
-
+    <!-- Scene -->
     <a-scene loading-screen="enabled: false"
              cursor="rayOrigin: mouse; fuse: false"
              raycaster="objects: .raycastable">
@@ -128,8 +61,8 @@
       <!-- Sky -->
       <a-sky src="#skyTexture" rotation="0 -90 0"></a-sky>
 
-      <!-- Grass Floor (raycastable so users can tap it) -->
-      <a-plane id="ground" class="raycastable" rotation="-90 0 0" width="50" height="50"
+      <!-- Grass Floor (not clickable anymore) -->
+      <a-plane id="ground" rotation="-90 0 0" width="50" height="50"
                src="#grassTexture" repeat="25 25"></a-plane>
 
       <!-- Gallery Row -->
@@ -162,15 +95,12 @@
 
       <!-- Info Panel -->
       <a-entity id="infoPanel" visible="false">
-        <!-- Enlarged Image -->
         <a-plane id="info-img" position="-3 10 -10" width="5" height="6"
                  material="src: #art0; side: double"></a-plane>
 
-        <!-- Description Text to the RIGHT of the image -->
         <a-text id="info-text" value="" position="3 12 -10" align="left"
                 width="12" color="white" wrap-count="60"></a-text>
 
-        <!-- Clickable Link (npub) -->
         <a-entity id="info-link-entity" position="3 10 -10" class="raycastable"
                   geometry="primitive: plane; height: 0.4; width: 9"
                   material="transparent: true; opacity: 0">
@@ -184,30 +114,17 @@
       <!-- Camera Rig -->
       <a-entity id="cameraRig" position="0 1.6 0">
         <a-entity id="camera" camera wasd-controls
-                  look-controls="touchEnabled: true; magicWindowTrackingEnabled: true;">
+                  look-controls="pointerLockEnabled: false; touchEnabled: true; magicWindowTrackingEnabled: true;">
         </a-entity>
       </a-entity>
 
-    </a-scene>
-
-    <!-- === SCRIPT: waits for scene loaded, restores descriptions, and initialises mobile controls === -->
-    <script>
-      // Wait for A-Frame scene to be ready
-      const scene = document.querySelector('a-scene');
-      scene.addEventListener('loaded', init);
-
-      function init() {
-        // Elements
+      <script>
         const infoPanel = document.querySelector("#infoPanel");
         const infoText = document.querySelector("#info-text");
         const infoLink = document.querySelector("#info-link");
         const infoLinkEntity = document.querySelector("#info-link-entity");
         const infoImg = document.querySelector("#info-img");
-        const cameraRig = document.querySelector("#cameraRig");
-        const camera = document.querySelector("#camera");
-        const ground = document.querySelector("#ground");
 
-        // Descriptions (restored)
         const descriptions = {
           art0: {
             text: "The Protocol Punisher - Just as Frank Castle wages an unyielding war against crime and corruption, Bitcoin’s protocol enforces the incorruptible rules of a new financial order. There are no plea bargains, no backroom deals, no central authority to bend its will — only the impartial law of mathematics. The Punisher’s relentless pursuit of justice mirrors the Bitcoin whitepaper’s vision: a system where fraud is exposed, trust is unnecessary, and every transaction is judged without prejudice.",
@@ -241,188 +158,28 @@
           }
         };
 
-        // show/hide info
-        window.showInfo = function(id){
+        function showInfo(id) {
           infoImg.setAttribute("material", "src: #" + id + "; side: double");
-          if(descriptions[id]){
+
+          if (descriptions[id]) {
             infoText.setAttribute("value", descriptions[id].text);
             infoLink.setAttribute("value", descriptions[id].npub);
-            infoLinkEntity.onclick = () => { if (descriptions[id].link) window.open(descriptions[id].link, "_blank"); };
+            infoLinkEntity.onclick = () => {
+              if (descriptions[id].link) window.open(descriptions[id].link, "_blank");
+            };
           } else {
-            infoText.setAttribute("value", ""); infoLink.setAttribute("value", ""); infoLinkEntity.onclick = null;
+            infoText.setAttribute("value", "");
+            infoLink.setAttribute("value", "");
+            infoLinkEntity.onclick = null;
           }
-          infoPanel.setAttribute("visible","true");
-        };
-        window.hideInfo = function(){ infoPanel.setAttribute("visible","false"); };
-        window.addEventListener('keydown', (e) => { if(e.key === "Escape"){ hideInfo(); } });
 
-        // tap-to-move on ground
-        ground.addEventListener("click", (e) => {
-          const intersect = e.detail.intersection;
-          if (intersect) {
-            const target = intersect.point;
-            moveCameraTo(target);
-          }
-        });
-
-        function moveCameraTo(target) {
-          const start = cameraRig.object3D.position.clone();
-          const end = new THREE.Vector3(target.x, start.y, target.z);
-          let progress = 0;
-          function animate() {
-            progress += 0.02;
-            if (progress >= 1) {
-              cameraRig.object3D.position.copy(end);
-              return;
-            }
-            cameraRig.object3D.position.lerpVectors(start, end, progress);
-            requestAnimationFrame(animate);
-          }
-          animate();
+          infoPanel.setAttribute("visible", "true");
         }
 
-        // ---------- MOBILE UI SETUP ----------
-        const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
-        if (isTouch) {
-          document.getElementById('mobileControls').style.display = 'flex';
-          document.getElementById('lookJoystick').style.display = 'block';
+        function hideInfo() { infoPanel.setAttribute("visible", "false"); }
 
-          // disable A-Frame's touch look-controls so our joystick controls are authoritative
-          camera.setAttribute('look-controls', 'enabled: false');
-        }
-
-        // Movement: press & hold
-        (function setupMovementButtons(){
-          const buttons = document.querySelectorAll('.move-btn');
-          const stepPerTick = 0.12; // smaller steps per interval for smoothness
-          const tickMs = 40; // movement tick interval
-          buttons.forEach(btn => {
-            let intervalId = null;
-            const dx = parseFloat(btn.getAttribute('data-dx')) || 0;
-            const dz = parseFloat(btn.getAttribute('data-dz')) || 0;
-
-            function doMove() {
-              // safety: ensure cameraRig.object3D is available
-              if (!cameraRig.object3D) return;
-              cameraRig.object3D.position.x += dx * stepPerTick;
-              cameraRig.object3D.position.z += dz * stepPerTick;
-            }
-
-            const start = (e) => {
-              e.preventDefault();
-              doMove(); // immediate
-              if (intervalId) clearInterval(intervalId);
-              intervalId = setInterval(doMove, tickMs);
-            };
-            const stop = (e) => {
-              if (e) e.preventDefault();
-              if (intervalId) { clearInterval(intervalId); intervalId = null; }
-            };
-
-            // touch
-            btn.addEventListener('touchstart', start, { passive: false });
-            btn.addEventListener('touchend', stop);
-            // mouse fallback
-            btn.addEventListener('mousedown', start);
-            window.addEventListener('mouseup', stop);
-            btn.addEventListener('mouseleave', stop);
-          });
-        })();
-
-        // ---------- LOOK JOYSTICK with easing/momentum ----------
-        (function setupJoystick() {
-          const joystick = document.getElementById('lookJoystick');
-          const handle = document.getElementById('joystickHandle');
-          const maxRadius = 40; // px
-          let dragging = false;
-          let vx = 0, vy = 0; // rotation velocities
-          let lastTime = performance.now();
-
-          // Animation loop: applies rotation every frame using vx/vy and decays them
-          function rafLoop(time) {
-            const dt = (time - lastTime) / 1000;
-            lastTime = time;
-            if (cameraRig && cameraRig.object3D && (Math.abs(vx) > 0 || Math.abs(vy) > 0)) {
-              // yaw on rig, pitch on camera (clamped)
-              cameraRig.object3D.rotation.y -= vx * dt * 6.0; // scale factor controls sensitivity
-              const newPitch = camera.object3D.rotation.x - vy * dt * 6.0;
-              camera.object3D.rotation.x = THREE.MathUtils.clamp(newPitch, -1.4, 1.4);
-
-              // decay velocities if not dragging
-              if (!dragging) {
-                vx *= 0.88;
-                vy *= 0.88;
-                if (Math.abs(vx) < 1e-4) vx = 0;
-                if (Math.abs(vy) < 1e-4) vy = 0;
-              }
-            }
-            requestAnimationFrame(rafLoop);
-          }
-          requestAnimationFrame(rafLoop);
-
-          function joystickCenter() {
-            const r = joystick.getBoundingClientRect();
-            return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
-          }
-
-          function setHandlePosition(px, py) {
-            // convert center-based px/py into left/top relative to container (handle default 40px offset)
-            handle.style.left = (40 + px) + 'px';
-            handle.style.top = (40 + py) + 'px';
-          }
-
-          function resetHandleSmooth() {
-            // smooth return using CSS transition already set
-            handle.style.left = '38px';
-            handle.style.top = '38px';
-            // remove transition after it finishes so immediate moves are not smoothed incorrectly
-            setTimeout(()=> { handle.style.transition = 'left 0.12s cubic-bezier(.22,.9,.22,1), top 0.12s cubic-bezier(.22,.9,.22,1)'; }, 220);
-          }
-
-          joystick.addEventListener('touchstart', function (e) {
-            e.preventDefault();
-            dragging = true;
-            handle.style.transition = ''; // immediate handle move while dragging
-            const t = e.touches[0];
-            const c = joystickCenter();
-            const dx = t.clientX - c.x;
-            const dy = t.clientY - c.y;
-            const dist = Math.min(Math.sqrt(dx*dx + dy*dy), maxRadius);
-            const angle = Math.atan2(dy, dx);
-            const px = Math.cos(angle) * dist;
-            const py = Math.sin(angle) * dist;
-            setHandlePosition(px, py);
-            // set velocities scaled to radius
-            vx = (dist / maxRadius) * Math.cos(angle) * 2.2;
-            vy = (dist / maxRadius) * Math.sin(angle) * 2.2;
-          }, { passive: false });
-
-          joystick.addEventListener('touchmove', function (e) {
-            e.preventDefault();
-            if (!dragging) return;
-            const t = e.touches[0];
-            const c = joystickCenter();
-            const dx = t.clientX - c.x;
-            const dy = t.clientY - c.y;
-            const dist = Math.min(Math.sqrt(dx*dx + dy*dy), maxRadius);
-            const angle = Math.atan2(dy, dx);
-            const px = Math.cos(angle) * dist;
-            const py = Math.sin(angle) * dist;
-            setHandlePosition(px, py);
-            // update velocities (instant)
-            vx = (dist / maxRadius) * Math.cos(angle) * 2.2;
-            vy = (dist / maxRadius) * Math.sin(angle) * 2.2;
-          }, { passive: false });
-
-          joystick.addEventListener('touchend', function (e) {
-            e.preventDefault();
-            dragging = false;
-            // smoothly return handle to center and let momentum decay in RAF loop
-            resetHandleSmooth();
-          });
-        })();
-
-      } // end init
-    </script>
+        window.addEventListener('keydown', (e) => { if (e.key === "Escape") { hideInfo(); } });
+      </script>
+    </a-scene>
   </body>
 </html>
