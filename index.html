@@ -30,6 +30,53 @@
         height: auto;
         z-index: 1000;
       }
+      /* Social icon bar */
+      #socialIcons {
+        position: fixed;
+        top: 10px;
+        left: 80px; /* just to the right of main logo */
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        z-index: 1000;
+      }
+      #socialIcons img {
+        width: 28px;
+        height: 28px;
+        filter: brightness(0) invert(1); /* force white for consistency */
+        cursor: pointer;
+        transition: opacity 0.3s;
+      }
+      #socialIcons img:hover {
+        opacity: 0.7;
+      }
+      /* Purchase button styling */
+      #purchase-btn {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #f7931a; /* Bitcoin orange */
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 1001;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      #purchase-btn img {
+        width: 20px;
+        height: 20px;
+      }
+      #purchase-btn:hover {
+        background: #ff9900;
+      }
     </style>
   </head>
   <body>
@@ -37,6 +84,25 @@
     <a href="https://github.com/artofproof/artofproof.github.io/blob/ff6357be5fc6f6f6aa748125a2e5845a14545fad/AOPWP.pdf" target="_blank">
       <img id="cornerLogo" src="invert.png" alt="Logo">
     </a>
+
+    <!-- Social Icons -->
+    <div id="socialIcons">
+      <a href="https://primal.net/p/nprofile1qqspdjnvdpk7h9fndtvf95gj3v83gnrpceqyq4cua5jg6yelg4989es4jsdrr" target="_blank">
+        <img src="https://nostrdesign.org/assets/images/nostr-icons-79ad5c8dcc671eba7b5d8b16316e1abe.png" alt="Nostr">
+      </a>
+      <a href="https://x.com/artofproof" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/X_logo_2023_original.svg" alt="X">
+      </a>
+      <a href="mailto:artofproof@gmail.com">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzo3JlXdn79GmCZtnDHLbUKWPrQMTDb4p4MQ&s" alt="Email">
+      </a>
+    </div>
+
+    <!-- Purchase Button -->
+    <button id="purchase-btn" onclick="window.open('https://coinos.io/invoice/43c0c03b-3c8d-4609-9116-2aa52f1da28a?options=true', '_blank')">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg" alt="₿">
+      Purchase "The Protocol Punisher"
+    </button>
 
     <!-- Scene -->
     <a-scene loading-screen="enabled: false"
@@ -124,6 +190,7 @@
         const infoLink = document.querySelector("#info-link");
         const infoLinkEntity = document.querySelector("#info-link-entity");
         const infoImg = document.querySelector("#info-img");
+        const purchaseBtn = document.getElementById("purchase-btn");
 
         const descriptions = {
           art0: {
@@ -167,16 +234,27 @@
             infoLinkEntity.onclick = () => {
               if (descriptions[id].link) window.open(descriptions[id].link, "_blank");
             };
+
+            // Show purchase button only for Protocol Punisher
+            if (id === "art0") {
+              purchaseBtn.style.display = "flex";
+            } else {
+              purchaseBtn.style.display = "none";
+            }
           } else {
             infoText.setAttribute("value", "");
             infoLink.setAttribute("value", "");
             infoLinkEntity.onclick = null;
+            purchaseBtn.style.display = "none";
           }
 
           infoPanel.setAttribute("visible", "true");
         }
 
-        function hideInfo() { infoPanel.setAttribute("visible", "false"); }
+        function hideInfo() { 
+          infoPanel.setAttribute("visible", "false"); 
+          purchaseBtn.style.display = "none";
+        }
 
         window.addEventListener('keydown', (e) => { if (e.key === "Escape") { hideInfo(); } });
       </script>
