@@ -32,22 +32,26 @@
       #socialIcons {
         position: fixed;
         top: 10px;
-        left: 80px; /* Adjusted to the right of the main logo */
+        left: 70px; /* Adjusted to the right of the main logo */
         display: flex;
         gap: 10px;
         align-items: center;
         z-index: 1000;
       }
       #socialIcons img {
-        width: 60px;
-        height: 60px;
+        width: 24px;
+        height: 24px;
         filter: brightness(0) invert(1); /* force white for consistency */
         cursor: pointer;
         transition: opacity 0.3s;
       }
+      #socialIcons a:nth-child(1) img { /* This targets the Nostr logo specifically */
+        width: 34px;
+        height: 34px;
+      }
       #socialIcons a:nth-child(2) img { /* This targets the X logo specifically */
-        width: 40px;
-        height: 40px;
+        width: 16px;
+        height: 16px;
       }
       #socialIcons img:hover {
         opacity: 0.7;
@@ -107,23 +111,17 @@
              cursor="rayOrigin: mouse; fuse: false"
              raycaster="objects: .raycastable">
 
-      <a-plane position="20 1.6 -20"
-               rotation="0 45 0"
+      <a-plane position="0 3.575 15"
+               rotation="0 180 0"
                width="8"
-               height="4"
-               color="#333"
+               height="8"
+               material="side: double; transparent: true; opacity: 0;"
                class="raycastable"
                onclick="window.open('https://artofproof.space/whitepaper', '_blank')"
-               animation="property: rotation; from: 0 45 0; to: 0 405 0; loop: true; dur: 10000; easing: linear;">
-        <a-image src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/invert.png"
-                 width="3"
-                 height="3"
-                 position="-2.5 0 0.01"></a-image>
-        <a-text value="Interactive Whitepaper"
-                align="center"
-                color="#f7931a"
-                wrap-count="20"
-                position="1.5 0 0.01"></a-text>
+               animation="property: rotation; from: 0 180 0; to: 0 540 0; loop: true; dur: 10000; easing: linear;">
+        <a-plane geometry="primitive: plane; width: 7; height: 7"
+                 material="src: https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/invert.png; side: double; transparent: true"
+                 position="0 0 0"></a-plane>
       </a-plane>
 
       <a-assets>
@@ -231,7 +229,7 @@
           art5: {
             text: "Orphan from Hell - Orphan from Hell is a fierce, symbolic portrayal of rebellion and rejection, drawing inspiration from the concept of 'orphan blocks' in the Bitcoin whitepaper. The image features a demonic figure with glowing Bitcoin eyes, a broken horn, and a massive weapon, embodying the spirit of the outcast, rejected by consensus but burning with purpose. Raw and intense, this antihero channels the energy of those who fight from the fringes, wielding conviction like a weapon in a world that tried to leave them behind.",
             link: "https://nosta.me/npub1q39st7du4ww4j8tr389nlw0snrwg5ctwvcdsdmhqy3prcesrwjvq6vnzug",
-            npub: "npub1q39st7du4ww4j8tr389nlw0snrwg5ctwvcdsdmhqy3prcesrwjvq6vnzug"
+            npub: "npub1q39st7du4ww4j8tr39nlw0snrwg5ctwvcdsdmhqy3prcesrwjvq6vnzug"
           }
         };
 
