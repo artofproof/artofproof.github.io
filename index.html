@@ -24,26 +24,30 @@
         position: fixed;
         top: 10px;
         left: 10px;
-        width: 40px;
-        height: 40px;
+        width: 60px;
+        height: 60px;
         z-index: 1000;
       }
       /* Social icon bar */
       #socialIcons {
         position: fixed;
         top: 10px;
-        left: 60px; /* just to the right of main logo */
+        left: 80px; /* Adjusted to the right of the main logo */
         display: flex;
         gap: 10px;
         align-items: center;
         z-index: 1000;
       }
       #socialIcons img {
-        width: 40px;
-        height: 40px;
+        width: 60px;
+        height: 60px;
         filter: brightness(0) invert(1); /* force white for consistency */
         cursor: pointer;
         transition: opacity 0.3s;
+      }
+      #socialIcons a:nth-child(2) img { /* This targets the X logo specifically */
+        width: 40px;
+        height: 40px;
       }
       #socialIcons img:hover {
         opacity: 0.7;
@@ -84,13 +88,13 @@
 
     <div id="socialIcons">
       <a href="https://primal.net/p/nprofile1qqspdjnvdpk7h9fndtvf95gj3v83gnrpceqyq4cua5jg6yelg4989es4jsdrr" target="_blank">
-        <img src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/social-icons/nostr-fill.png" alt="Nostr">
+        <img src="https://github.com/artofproof/artofproof.github.io/blob/main/nostr.png?raw=true" alt="Nostr">
       </a>
       <a href="https://x.com/artofproof" target="_blank">
         <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/X_logo_2023_original.svg" alt="X">
       </a>
       <a href="mailto:artofproof@gmail.com">
-        <img src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/social-icons/mail-fill.png" alt="Email">
+        <img src="https://github.com/artofproof/artofproof.github.io/blob/main/mail.png?raw=true" alt="Email">
       </a>
     </div>
 

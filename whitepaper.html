@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artofproof: Interactive Whitepaper</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Dark & Bold (Stone-950, Stone-200, Muted Terracotta) -->
+    <!-- Application Structure Plan: A single-page, scrolling narrative design. It starts with a high-level introduction, explains core concepts using a card layout, then features a central, multi-stage interactive diagram that users control to walk through the Creation, Transfer, and Ownership phases. This interactive approach was chosen over a static page to actively engage the user in understanding the complex process, which is the core of the whitepaper, thus improving comprehension and retention over passive reading. The structure concludes with a comparison and summary. -->
+    <!-- Visualization & Content Choices: Report Info: The 3-phase process of Artofproof. Goal: Organize & Explain Change. Viz/Presentation Method: An interactive process-flow diagram built with styled HTML divs and CSS. Interaction: Users click buttons to progress through the phases (Creation, Transfer, Ownership) and individual steps, triggering JS to update CSS classes for visual highlighting and to display corresponding descriptive text. Justification: A dynamic, user-controlled diagram is superior to static images for explaining a sequence of events, making the abstract concept tangible and easier to follow. Library/Method: Vanilla JavaScript and Tailwind CSS. CONFIRMED no SVG/Mermaid. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+        .diagram-element {
+            transition: all 0.5s ease-in-out;
+            opacity: 0.3;
+            transform: scale(0.95);
+        }
+        .diagram-element.active {
+            opacity: 1;
+            transform: scale(1);
+            box-shadow: 0 0 15px rgba(234, 88, 12, 0.4);
+        }
+        .diagram-arrow {
+            transition: all 0.5s ease-in-out;
+            opacity: 0.2;
+        }
+        .diagram-arrow.active {
+            opacity: 1;
+            color: #ea580c;
+        }
+        .nav-link {
+            transition: color 0.3s;
+        }
+        .nav-link:hover {
+            color: #c2410c;
+        }
+        .phase-button.active {
+            background-color: #ea580c;
+            color: #ffffff;
+        }
+        .phase-button.disabled {
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body class="bg-stone-950 text-stone-200">
+
+    <header class="bg-stone-900/80 backdrop-blur-md sticky top-0 z-50 border-b border-stone-800">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="https://artofproof.space">
+                        <img src="https://github.com/artofproof/artofproof.github.io/blob/main/invert.png?raw=true" alt="Artofproof Logo" class="h-8 md:h-10">
+                    </a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#introduction" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-stone-400 hover:text-orange-400">Introduction</a>
+                        <a href="#concepts" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-stone-400 hover:text-orange-400">Core Concepts</a>
+                        <a href="#process" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-stone-400 hover:text-orange-400">The Process</a>
+                        <a href="#comparison" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-stone-400 hover:text-orange-400">Comparison</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <section id="hero" class="text-center py-20">
+            <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-stone-50">A New Protocol for Verifiable Art Ownership.</h1>
+            <p class="mt-6 text-lg md:text-xl text-stone-400 max-w-3xl mx-auto">Bridging the gap between digital scarcity and tangible possession through a revolutionary ownership model.</p>
+        </section>
+
+        <div class="space-y-24 md:space-y-32">
+        
+            <section id="introduction">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-stone-50">The Problem with Digital Ownership</h2>
+                    <p class="mt-4 text-lg text-stone-400 max-w-3xl mx-auto">This section introduces the core challenge Artofproof aims to solve. While current technologies offer digital proof, they often fail to connect it meaningfully to a physical item, creating a disjointed ownership experience.</p>
+                </div>
+                <div class="mt-12 grid md:grid-cols-2 gap-8 items-center">
+                    <div class="bg-stone-900 p-8 rounded-lg border border-stone-800">
+                        <h3 class="text-xl font-bold text-stone-50">Legacy Systems: NFTs & Ordinals</h3>
+                        <p class="mt-4 text-stone-300">The advent of digital art has brought about new challenges in the realm of ownership and scarcity. While blockchain technologies have introduced novel solutions like NFTs and Ordinals, they often fall short of creating a tangible, verifiable link between the digital artifact, a physical representation, and the true owner.</p>
+                    </div>
+                    <div class="bg-stone-900 p-8 rounded-lg border border-stone-800">
+                        <h3 class="text-xl font-bold text-stone-50">The Artofproof Solution</h3>
+                        <p class="mt-4 text-stone-300">Artofproof proposes a new protocol that leverages the simplicity and security of Nostr keypairs and Bitcoin payments to create a system where the private key itself becomes the verifiable proof of ownership, inextricably linked to both a digital work and a unique physical print.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="concepts">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-stone-50">Core Concepts</h2>
+                    <p class="mt-4 text-lg text-stone-400 max-w-3xl mx-auto">The protocol is built on three foundational pillars. Together, they create a secure and transparent system for singular art ownership. Explore each concept to understand its role in the ecosystem.</p>
+                </div>
+                <div class="mt-12 grid md:grid-cols-3 gap-8">
+                    <div class="bg-stone-900 p-8 rounded-lg border border-stone-800 text-center">
+                        <div class="text-4xl mb-4 text-stone-50">🔑</div>
+                        <h3 class="text-xl font-bold text-stone-50">Nostr Keypairs</h3>
+                        <p class="mt-2 text-stone-300">Each artwork gets a unique public (`npub`) and private (`nsec`) key. The `npub` is its public ID, while the `nsec` is the secret key that proves ownership.</p>
+                    </div>
+                    <div class="bg-stone-900 p-8 rounded-lg border border-stone-800 text-center">
+                        <div class="text-4xl mb-4 text-stone-50">🛡️</div>
+                        <h3 class="text-xl font-bold text-stone-50">The Artofproof Vault</h3>
+                        <p class="mt-2 text-stone-300">A secure, isolated system storing all private keys (`nsec`). It guarantees the key is provably destroyed and transferred only upon a verified purchase.</p>
+                    </div>
+                    <div class="bg-stone-900 p-8 rounded-lg border border-stone-800 text-center">
+                        <div class="text-4xl mb-4 text-stone-50">🖼️</div>
+                        <h3 class="text-xl font-bold text-stone-50">Physical Art on Metal</h3>
+                        <p class="mt-2 text-stone-300">A high-quality physical print of the artwork. This provides the owner with a tangible manifestation of their digitally-secured purchase.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="process">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-stone-50">The Artofproof Process</h2>
+                    <p class="mt-4 text-lg text-stone-400 max-w-4xl mx-auto">Click on a phase to explore each part of the process. The diagram will then respond to the steps below.</p>
+                </div>
+
+                <div class="mt-12 bg-stone-900 p-6 md:p-8 rounded-lg border border-stone-800">
+                    <div class="flex justify-center space-x-2 md:space-x-4 mb-8">
+                        <button data-phase="creation" class="phase-button px-4 py-2 text-sm md:text-base font-semibold rounded-md border border-stone-700 transition active">1. Creation</button>
+                        <button data-phase="transfer" class="phase-button px-4 py-2 text-sm md:text-base font-semibold rounded-md border border-stone-700 transition">2. Transfer</button>
+                        <button data-phase="ownership" class="phase-button px-4 py-2 text-sm md:text-base font-semibold rounded-md border border-stone-700 transition">3. Ownership</button>
+                    </div>
+                    
+                    <div class="grid lg:grid-cols-3 gap-8 items-center">
+                        <div class="lg:col-span-2 bg-stone-950 p-4 rounded-lg min-h-[300px] md:min-h-[400px] flex items-center justify-center">
+                            <div class="w-full grid grid-cols-3 items-center gap-2 text-center text-xs md:text-sm font-semibold">
+                                <div id="artist" class="diagram-element p-3 md:p-4 bg-stone-900 rounded-lg border-2 border-transparent text-stone-50">🎨<br>Artist</div>
+                                <div class="space-y-4">
+                                    <div id="arrow1" class="diagram-arrow font-bold text-2xl text-stone-400">→</div>
+                                    <div id="arrow4" class="diagram-arrow font-bold text-2xl text-stone-400">←</div>
+                                </div>
+                                <div id="gallery" class="diagram-element p-3 md:p-4 bg-stone-900 rounded-lg border-2 border-transparent text-stone-50">🏛️<br>Artofproof Gallery</div>
+                                
+                                <div></div>
+                                <div class="flex flex-col items-center space-y-4">
+                                     <div id="arrow2" class="diagram-arrow font-bold text-2xl text-stone-400 -rotate-90">→</div>
+                                     <div id="arrow6" class="diagram-arrow font-bold text-2xl text-stone-400 rotate-90">→</div>
+                                </div>
+                                <div></div>
+                                
+                                <div id="vault" class="diagram-element p-3 md:p-4 bg-stone-900 rounded-lg border-2 border-transparent text-stone-50">🛡️<br>Secure Vault</div>
+                                 <div class="space-y-4">
+                                     <div id="arrow3" class="diagram-arrow font-bold text-2xl text-stone-400">→</div>
+                                     <div id="arrow5" class="diagram-arrow font-bold text-2xl text-stone-400">←</div>
+                                </div>
+                                <div id="buyer" class="diagram-element p-3 md:p-4 bg-stone-900 rounded-lg border-2 border-transparent text-stone-50">👤<br>Buyer</div>
+                            </div>
+                        </div>
+
+                        <div class="min-h-[300px] md:min-h-[400px] flex flex-col justify-between">
+                             <div>
+                                <h3 id="step-title" class="text-xl font-bold text-stone-50 mb-2"></h3>
+                                <p id="step-description" class="text-stone-300"></p>
+                            </div>
+                            <div class="mt-4 flex items-center space-x-4">
+                                <button id="prev-step" class="px-4 py-2 font-semibold rounded-md border border-stone-700 text-stone-200 disabled:opacity-50">Back</button>
+                                <button id="next-step" class="px-4 py-2 font-semibold rounded-md bg-orange-600 text-white hover:bg-orange-700 disabled:opacity-50">Next Step</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="comparison">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-stone-50">How Artofproof Differs</h2>
+                     <p class="mt-4 text-lg text-stone-400 max-w-3xl mx-auto">The protocol introduces a fundamental shift in digital art ownership. This comparison highlights the key distinctions between the Artofproof model and existing blockchain-based systems.</p>
+                </div>
+                <div class="mt-12 grid md:grid-cols-2 gap-0.5 bg-stone-800 rounded-lg overflow-hidden border border-stone-800">
+                    <div class="bg-stone-900 p-6">
+                        <h3 class="font-bold text-xl text-stone-50">Legacy Systems (NFTs/Ordinals)</h3>
+                        <ul class="mt-4 space-y-2 text-stone-300 list-disc list-inside">
+                            <li>Ownership is publicly verifiable on a blockchain.</li>
+                            <li>Digital file often stored separately (e.g., IPFS).</li>
+                            <li>Physical link is optional and not cryptographically tied.</li>
+                            <li>Value is tied to a public ledger entry.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-stone-900 p-6">
+                        <h3 class="font-bold text-xl text-stone-50">The Artofproof Protocol</h3>
+                        <ul class="mt-4 space-y-2 text-stone-300 list-disc list-inside">
+                            <li>Ownership is proven by private key possession.</li>
+                            <li>Digital representation is removed post-sale.</li>
+                            <li>Physical item is integral to the final transfer.</li>
+                            <li>Value is tied to the unique `nsec` and the physical art.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="conclusion" class="text-center bg-stone-900 p-12 rounded-lg border border-stone-800">
+                 <h2 class="text-3xl font-bold tracking-tight text-stone-50">A Paradigm Shift in Ownership</h2>
+                 <p class="mt-4 text-lg text-stone-400 max-w-3xl mx-auto">Artofproof presents a compelling model for linking digital scarcity to physical ownership. The destruction of the `nsec` from the vault and its transfer to the owner fundamentally shifts the paradigm from public, verifiable ownership to private, cryptographic ownership, echoing the true nature of a unique art collection.</p>
+            </section>
+        </div>
+    </main>
+
+    <footer class="bg-stone-900 border-t border-stone-800 mt-24">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-sm text-stone-500">
+            <p>The Protocol</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const processData = {
+                creation: {
+                    title: "Phase 1: Creation",
+                    steps: [
+                        { description: "An artist uploads a digital artwork to the artofproof gallery.", highlights: { elements: ['artist', 'gallery'], arrows: ['arrow1'] } },
+                        { description: "The system generates a unique public (npub) and private (nsec) keypair for the art.", highlights: { elements: ['gallery'], arrows: [] } },
+                        { description: "The artwork's npub is publicly registered with the art piece in the gallery.", highlights: { elements: ['gallery'], arrows: [] } },
+                        { description: "The corresponding private key (nsec) is securely stored in the Artofproof Vault.", highlights: { elements: ['gallery', 'vault'], arrows: ['arrow2'] } }
+                    ]
+                },
+                transfer: {
+                    title: "Phase 2: Transfer",
+                    steps: [
+                        { description: "A buyer initiates a Bitcoin payment for the selected artwork.", highlights: { elements: ['buyer', 'gallery'], arrows: ['arrow5'] } },
+                        { description: "The Artofproof system verifies the payment transaction.", highlights: { elements: ['gallery'], arrows: [] } },
+                        { description: "The nsec is retrieved from the Vault and its record is permanently destroyed from the system.", highlights: { elements: ['gallery', 'vault'], arrows: ['arrow6'] } },
+                        { description: "The nsec is encrypted and securely sent to the new owner.", highlights: { elements: ['gallery', 'buyer'], arrows: ['arrow3'] } },
+                        { description: "The digital artwork is removed from the public gallery.", highlights: { elements: ['gallery'], arrows: [] } }
+                    ]
+                },
+                ownership: {
+                    title: "Phase 3: Ownership",
+                    steps: [
+                        { description: "The new owner receives the nsec and the physical art print on metal.", highlights: { elements: ['buyer'], arrows: [] } },
+                        { description: "Possession of the nsec is now the definitive cryptographic proof of ownership.", highlights: { elements: ['buyer'], arrows: [] } },
+                        { description: "The art is now non-fungible and off-market, its existence held privately by the owner.", highlights: { elements: ['buyer'], arrows: [] } }
+                    ]
+                }
+            };
+
+            let currentPhase = 'creation';
+            let currentStep = 0;
+
+            const stepTitleEl = document.getElementById('step-title');
+            const stepDescriptionEl = document.getElementById('step-description');
+            const nextStepBtn = document.getElementById('next-step');
+            const prevStepBtn = document.getElementById('prev-step');
+            const phaseButtons = document.querySelectorAll('.phase-button');
+            const diagramElements = document.querySelectorAll('.diagram-element');
+            const diagramArrows = document.querySelectorAll('.diagram-arrow');
+
+            function updateUI() {
+                const phaseData = processData[currentPhase];
+                const stepData = phaseData.steps[currentStep];
+
+                stepTitleEl.textContent = `${phaseData.title} (Step ${currentStep + 1}/${phaseData.steps.length})`;
+                stepDescriptionEl.textContent = stepData.description;
+
+                diagramElements.forEach(el => el.classList.remove('active'));
+                diagramArrows.forEach(arrow => arrow.classList.remove('active'));
+
+                stepData.highlights.elements.forEach(id => document.getElementById(id)?.classList.add('active'));
+                stepData.highlights.arrows.forEach(id => document.getElementById(id)?.classList.add('active'));
+
+                prevStepBtn.disabled = currentStep === 0;
+                nextStepBtn.disabled = currentStep === phaseData.steps.length - 1;
+                
+                phaseButtons.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.phase === currentPhase);
+                });
+            }
+
+            nextStepBtn.addEventListener('click', () => {
+                const phaseData = processData[currentPhase];
+                if (currentStep < phaseData.steps.length - 1) {
+                    currentStep++;
+                    updateUI();
+                }
+            });
+
+            prevStepBtn.addEventListener('click', () => {
+                if (currentStep > 0) {
+                    currentStep--;
+                    updateUI();
+                }
+            });
+
+            phaseButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    currentPhase = button.dataset.phase;
+                    currentStep = 0;
+                    updateUI();
+                });
+            });
+
+            updateUI();
+        });
+    </script>
+</body>
+</html>
