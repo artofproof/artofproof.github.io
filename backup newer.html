@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>artofproof</title>
 
+    <!-- Favicons -->
     <link rel="icon" href="favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="192x192" href="android-chrome-192x192.png">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180x180.png">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 
+    <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
     <style>
@@ -24,23 +26,23 @@
         position: fixed;
         top: 10px;
         left: 10px;
-        width: 40px;
-        height: 40px;
+        width: 60px;
+        height: auto;
         z-index: 1000;
       }
       /* Social icon bar */
       #socialIcons {
         position: fixed;
         top: 10px;
-        left: 60px; /* just to the right of main logo */
+        left: 80px; /* just to the right of main logo */
         display: flex;
         gap: 10px;
         align-items: center;
         z-index: 1000;
       }
       #socialIcons img {
-        width: 40px;
-        height: 40px;
+        width: 28px;
+        height: 28px;
         filter: brightness(0) invert(1); /* force white for consistency */
         cursor: pointer;
         transition: opacity 0.3s;
@@ -78,32 +80,37 @@
     </style>
   </head>
   <body>
+    <!-- Top-left logo linked to PDF -->
     <a href="https://github.com/artofproof/artofproof.github.io/blob/ff6357be5fc6f6f6aa748125a2e5845a14545fad/AOPWP.pdf" target="_blank">
       <img id="cornerLogo" src="invert.png" alt="Logo">
     </a>
 
+    <!-- Social Icons -->
     <div id="socialIcons">
       <a href="https://primal.net/p/nprofile1qqspdjnvdpk7h9fndtvf95gj3v83gnrpceqyq4cua5jg6yelg4989es4jsdrr" target="_blank">
-        <img src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/social-icons/nostr-fill.png" alt="Nostr">
+        <img src="https://nostrdesign.org/assets/images/nostr-icons-79ad5c8dcc671eba7b5d8b16316e1abe.png" alt="Nostr">
       </a>
       <a href="https://x.com/artofproof" target="_blank">
         <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/X_logo_2023_original.svg" alt="X">
       </a>
       <a href="mailto:artofproof@gmail.com">
-        <img src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/social-icons/mail-fill.png" alt="Email">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzo3JlXdn79GmCZtnDHLbUKWPrQMTDb4p4MQ&s" alt="Email">
       </a>
     </div>
 
+    <!-- Purchase Button -->
     <button id="purchase-btn" onclick="window.open('https://coinos.io/invoice/43c0c03b-3c8d-4609-9116-2aa52f1da28a?options=true', '_blank')">
       <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg" alt="₿">
       Purchase "The Protocol Punisher"
     </button>
 
+    <!-- Scene -->
     <a-scene loading-screen="enabled: false"
              cursor="rayOrigin: mouse; fuse: false"
              raycaster="objects: .raycastable">
 
       <a-assets>
+        <!-- Artworks -->
         <img id="art0" crossorigin="anonymous" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/114b7eb2-aa73-4012-a384-dfc5cb8bd0a6.png">
         <img id="art1" crossorigin="anonymous" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/205b28f0-a623-48e8-996a-04fd19c9df6a.png">
         <img id="art2" crossorigin="anonymous" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/4cd72a9c-ab47-460e-aa98-9dda68d7bfb2.png">
@@ -111,16 +118,20 @@
         <img id="art4" crossorigin="anonymous" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/e37460ef-dbb5-43a2-b844-d74ebed1c4bf.png">
         <img id="art5" crossorigin="anonymous" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/npub1q39st7du4ww4j8tr389nlw0snrwg5ctwvcdsdmhqy3prcesrwjvq6vnzug.png">
 
+        <!-- Textures -->
         <img id="grassTexture" src="https://cdn.pixabay.com/photo/2015/03/26/09/54/grass-690300_1280.jpg">
         <img id="skyTexture" src="https://cdn.pixabay.com/photo/2016/03/09/09/30/sky-1245953_1280.jpg">
         <img id="logo" src="artofproof.png">
       </a-assets>
 
+      <!-- Sky -->
       <a-sky src="#skyTexture" rotation="0 -90 0"></a-sky>
 
+      <!-- Grass Floor (not clickable anymore) -->
       <a-plane id="ground" rotation="-90 0 0" width="50" height="50"
                src="#grassTexture" repeat="25 25"></a-plane>
 
+      <!-- Gallery Row -->
       <a-entity id="gallery" position="0 1.6 -3">
         <a-entity id="art0-entity" position="-3 0 0" class="raycastable"
                   geometry="primitive: plane; width: 0.86; height: 1.16"
@@ -148,6 +159,7 @@
                   onclick="showInfo('art5')"></a-entity>
       </a-entity>
 
+      <!-- Info Panel -->
       <a-entity id="infoPanel" visible="false">
         <a-plane id="info-img" position="-3 10 -10" width="5" height="6"
                  material="src: #art0; side: double"></a-plane>
@@ -165,6 +177,7 @@
         </a-entity>
       </a-entity>
 
+      <!-- Camera Rig -->
       <a-entity id="cameraRig" position="0 1.6 0">
         <a-entity id="camera" camera wasd-controls
                   look-controls="pointerLockEnabled: false; touchEnabled: true; magicWindowTrackingEnabled: true;">
