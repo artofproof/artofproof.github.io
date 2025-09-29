@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
   <head>
@@ -12,14 +13,6 @@
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    
-    <script>
-        AFRAME.registerComponent('text-font', {
-            init: function () {
-                // Ensure the 'font' attribute is applied to all a-text elements
-            }
-        });
-    </script>
 
     <style>
       body {
@@ -36,7 +29,6 @@
         height: 60px;
         z-index: 1000;
       }
-      /* Social icon bar */
       #socialIcons {
         position: fixed;
         top: 10px;
@@ -65,6 +57,28 @@
         opacity: 0.7;
       }
       #purchase-btn { display: none; }
+
+      /* Cyberpunk glow variants */
+      .glow-orange {
+        text-shadow: 0 0 5px #f7931a,
+                     0 0 10px #ffae42,
+                     0 0 20px #ffae42;
+      }
+      .glow-white {
+        text-shadow: 0 0 5px #fff,
+                     0 0 10px #ccc,
+                     0 0 20px #fff;
+      }
+      .glow-purple {
+        text-shadow: 0 0 5px #a020f0,
+                     0 0 10px #ff00ff,
+                     0 0 20px #ff00ff;
+      }
+      .glow-cyan {
+        text-shadow: 0 0 5px #0ff,
+                     0 0 10px #0ff,
+                     0 0 20px #00ffff;
+      }
     </style>
   </head>
   <body>
@@ -110,62 +124,83 @@
 
       <a-sky src="#skyTexture" rotation="0 -90 0"></a-sky>
 
+      <!-- Countdown timer in the sky -->
+      <a-text id="countdown"
+              value="Loading countdown..."
+              position="0 10 -3"
+              align="center"
+              width="8"
+              color="#0ff"
+              class="glow-cyan"
+              font="https://cdn.aframe.io/fonts/Exo2Bold.fnt">
+      </a-text>
+
       <a-plane id="ground" rotation="-90 0 0" width="50" height="50"
                src="#grassTexture" repeat="25 25"></a-plane>
 
+      <!-- main art display -->
       <a-entity id="main-display" position="0 1.6 -3">
 
         <a-entity id="art0-entity" position="-1.5 0 0"
                   geometry="primitive: plane; width: 1.5; height: 2.0"
                   material="src: #art0; side: double; shader: flat"
                   class="raycastable"
-                  ></a-entity>
+                  onclick="showInfo('art0')"></a-entity>
 
-        <a-entity id="qr-code-entity" position="1.5 0 0" class="raycastable"
+        <a-entity id="qr-code-entity-ground" position="1.5 0 0" class="raycastable"
                   geometry="primitive: plane; width: 2.0; height: 2.0"
                   material="src: #qrCode; side: double; shader: flat"
                   onclick="window.open('https://coinos.io/invoice/43c0c03b-3c8d-4609-9116-2aa52f1da28a?options=true', '_blank')">
-        </a-entity>
-
-        <a-text value="The Protocol Punisher"
-                position="-1.5 1.5 0"
-                align="center"
-                width="4"
-                color="white"
-                font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-                text-font>
-        </a-text>
-
-        <a-entity position="-1.5 -1.3 0" class="raycastable"
-                  onclick="window.open('https://nosta.me/npub14u6x8fd4kfh3ygzrnh5ny4qyeeggswr55v0z93hdme8qttvm2t9qwk9jme', '_blank')">
-             <a-text value="npub14u6x8fd4kfh3ygzrnh5ny4qyeeggswr55v0z93hdme8qttvm2t9qwk9jme"
+             <a-text value="Scan or Click to Purchase"
+                     position="0 1.2 0"
                      align="center"
-                     width="4"
-                     color="#a020f0"
-                     font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-                     animation="property: color; dir: alternate; dur: 800; loop: true; to: #ff00ff"
-                     text-font>
+                     width="5"
+                     color="#f7931a"
+                     class="glow-orange"
+                     font="https://cdn.aframe.io/fonts/Exo2Bold.fnt">
              </a-text>
         </a-entity>
 
-        <a-text value="Just as Frank Castle wages an unyielding war against crime and corruption, Bitcoin’s protocol enforces the incorruptible rules of a new financial order. There are no plea bargains, no backroom deals, no central authority to bend its will — only the impartial law of mathematics. The Punisher’s relentless pursuit of justice mirrors the Bitcoin whitepaper’s vision: a system where fraud is exposed, trust is unnecessary, and every transaction is judged without prejudice."
-                position="0 -2.5 0"
-                align="center"
-                width="8"
+      </a-entity>
+
+      <!-- info panel -->
+      <a-entity id="infoPanel" visible="false">
+        <a-plane id="info-img" position="-3 10 -10" width="5" height="6"
+                 material="src: #art0; side: double"></a-plane>
+
+        <a-text id="info-text"
+                value=""
+                position="3 12 -10"
+                align="left"
+                width="12"
                 color="white"
                 wrap-count="60"
-                font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-                text-font>
+                class="glow-white"
+                font="https://cdn.aframe.io/fonts/Exo2Bold.fnt">
         </a-text>
 
-        <a-text value="Scan or Click to Purchase"
-                position="1.5 1.5 0"
-                align="center"
-                width="4"
-                color="#f7931a"
+        <a-text id="info-ownership"
+                value=""
+                position="3 9.8 -10"
+                align="left"
+                width="12"
+                wrap-count="60"
+                color="#FFD700"
+                class="glow-orange"
                 font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-                text-font>
+                animation__shimmer="property: color; dir: alternate; dur: 1500; loop: true; to: #FFFACD">
         </a-text>
+
+        <a-entity id="info-link-entity" position="3 9 -10" class="raycastable"
+                  geometry="primitive: plane; height: 0.4; width: 9"
+                  material="transparent: true; opacity: 0">
+          <a-text id="info-link" value="" align="left"
+                  width="9" color="#a020f0"
+                  class="glow-purple"
+                  font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+                  animation="property: color; dir: alternate; dur: 800; loop: true; to: #ff00ff">
+          </a-text>
+        </a-entity>
       </a-entity>
 
       <a-entity id="cameraRig" position="0 1.6 0">
@@ -173,6 +208,76 @@
                   look-controls="pointerLockEnabled: false; touchEnabled: true; magicWindowTrackingEnabled: true;">
         </a-entity>
       </a-entity>
+
+      <script>
+        const infoPanel = document.querySelector("#infoPanel");
+        const infoText = document.querySelector("#info-text");
+        const infoOwnership = document.querySelector("#info-ownership");
+        const infoLink = document.querySelector("#info-link");
+        const infoLinkEntity = document.querySelector("#info-link-entity");
+        const infoImg = document.querySelector("#info-img");
+        const countdownEl = document.querySelector("#countdown");
+
+        // descriptions
+        const descriptions = {
+          art0: {
+            text: "\"The Protocol Punisher - Just as Frank Castle wages an unyielding war against crime and corruption, Bitcoin’s protocol enforces the incorruptible rules of a new financial order. There are no plea bargains, no backroom deals, no central authority to bend its will — only the impartial law of mathematics. The Punisher’s relentless pursuit of justice mirrors the Bitcoin whitepaper’s vision: a system where fraud is exposed, trust is unnecessary, and every transaction is judged without prejudice.\"",
+            ownership: "This piece will ship as a one-of-one metal print, permanently bound with its corresponding nsec — serving as cryptographic proof of ownership.",
+            link: "https://nosta.me/npub14u6x8fd4kfh3ygzrnh5ny4qyeeggswr55v0z93hdme8qttvm2t9qwk9jme",
+            npub: "npub14u6x8fd4kfh3ygzrnh5ny4qyeeggswr55v0z93hdme8qttvm2t9qwk9jme"
+          }
+        };
+
+        function showInfo(id) {
+          infoImg.setAttribute("material", "src: #" + id + "; side: double");
+          if (descriptions[id]) {
+            infoText.setAttribute("value", descriptions[id].text);
+            infoOwnership.setAttribute("value", descriptions[id].ownership);
+            infoLink.setAttribute("value", descriptions[id].npub);
+            infoLinkEntity.onclick = () => {
+              if (descriptions[id].link) window.open(descriptions[id].link, "_blank");
+            };
+          } else {
+            infoText.setAttribute("value", "Information not found.");
+            infoOwnership.setAttribute("value", "");
+            infoLink.setAttribute("value", "");
+            infoLinkEntity.onclick = null;
+          }
+          infoPanel.setAttribute("visible", "true");
+        }
+
+        function hideInfo() {
+          infoPanel.setAttribute("visible", "false");
+        }
+        window.addEventListener('keydown', (e) => { if (e.key === "Escape") { hideInfo(); } });
+
+        // Countdown Timer
+        const now = new Date();
+        const targetDate = new Date();
+        targetDate.setMonth(now.getMonth() + 1);
+
+        function updateCountdown() {
+          const now = new Date();
+          const diff = targetDate - now;
+
+          if (diff <= 0) {
+            countdownEl.setAttribute("value", "Time's up!");
+            return;
+          }
+
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+          const minutes = Math.floor((diff / (1000 * 60)) % 60);
+          const seconds = Math.floor((diff / 1000) % 60);
+
+          countdownEl.setAttribute("value", 
+            `Countdown: ${days}d ${hours}h ${minutes}m ${seconds}s`);
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+      </script>
     </a-scene>
   </body>
 </html>
+```
