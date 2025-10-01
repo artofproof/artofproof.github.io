@@ -249,8 +249,8 @@
 
         // Countdown Timer
         const now = new Date();
-        const targetDate = new Date();
-        targetDate.setMonth(now.getMonth() + 1);
+        // Updated: Set targetDate to exactly 30 days from now by adding milliseconds
+        const targetDate = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));
 
         function updateCountdown() {
           const now = new Date();
