@@ -382,7 +382,7 @@
         // Create simple glowing grid on the ground (flat on floor only)
         const scene = document.querySelector("a-scene");
         const gridContainer = document.createElement("a-entity");
-        gridContainer.setAttribute("position", "0 0.02 0");
+        gridContainer.setAttribute("position", "0 0 0");
         gridContainer.setAttribute("rotation", "-90 0 0");
         
         const gridSize = 100;
@@ -392,9 +392,9 @@
           // Lines along X axis
           const lineX = document.createElement("a-plane");
           lineX.setAttribute("position", `${x} 0 0`);
-          lineX.setAttribute("width", "0.12");
+          lineX.setAttribute("width", "0.1");
           lineX.setAttribute("height", gridSize);
-          lineX.setAttribute("material", "color: #00ff00; emissive: #00ff00; emissiveIntensity: 2; shader: flat; side: front; depthTest: true; depthWrite: true");
+          lineX.setAttribute("material", "color: #00ff00; emissive: #00ff00; emissiveIntensity: 2; shader: flat; side: double");
           gridContainer.appendChild(lineX);
         }
         
@@ -403,8 +403,8 @@
           const lineZ = document.createElement("a-plane");
           lineZ.setAttribute("position", `0 0 ${z}`);
           lineZ.setAttribute("width", gridSize);
-          lineZ.setAttribute("height", "0.12");
-          lineZ.setAttribute("material", "color: #00ff00; emissive: #00ff00; emissiveIntensity: 2; shader: flat; side: front; depthTest: true; depthWrite: true");
+          lineZ.setAttribute("height", "0.1");
+          lineZ.setAttribute("material", "color: #00ff00; emissive: #00ff00; emissiveIntensity: 2; shader: flat; side: double");
           gridContainer.appendChild(lineZ);
         }
         

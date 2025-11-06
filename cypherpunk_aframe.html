@@ -130,9 +130,9 @@
         bottom: 20px;
         left: 50%;
         transform: translateX(-50%);
-        background: linear-gradient(135deg, #f7931a 0%, #ff9500 100%);
+        background: linear-gradient(135deg, #00ff00 0%, #00cc00 100%);
         color: #000;
-        border: 2px solid #f7931a;
+        border: 2px solid #00ff00;
         padding: 12px 24px;
         border-radius: 0;
         font-size: 16px;
@@ -144,13 +144,13 @@
         gap: 10px;
         text-transform: uppercase;
         letter-spacing: 2px;
-        box-shadow: 0 0 20px rgba(247, 147, 26, 0.5);
-        animation: buttonGlowOrange 2s ease-in-out infinite;
+        box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        animation: buttonGlow 2s ease-in-out infinite;
       }
 
-      @keyframes buttonGlowOrange {
-        0%, 100% { box-shadow: 0 0 20px rgba(247, 147, 26, 0.5); }
-        50% { box-shadow: 0 0 30px rgba(247, 147, 26, 0.8); }
+      @keyframes buttonGlow {
+        0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); }
+        50% { box-shadow: 0 0 30px rgba(0, 255, 0, 0.8); }
       }
 
       #purchase-btn img {
@@ -159,9 +159,9 @@
       }
 
       #purchase-btn:hover {
-        background: linear-gradient(135deg, #ff9500 0%, #e68000 100%);
+        background: linear-gradient(135deg, #00cc00 0%, #009900 100%);
         transform: translateX(-50%) scale(1.05);
-        box-shadow: 0 0 40px rgba(247, 147, 26, 0.8);
+        box-shadow: 0 0 40px rgba(0, 255, 0, 0.8);
       }
     </style>
   </head>
@@ -379,36 +379,30 @@
           starsContainer.appendChild(star);
         }
 
-        // Create simple glowing grid on the ground (flat on floor only)
-        const scene = document.querySelector("a-scene");
-        const gridContainer = document.createElement("a-entity");
-        gridContainer.setAttribute("position", "0 0.02 0");
-        gridContainer.setAttribute("rotation", "-90 0 0");
-        
+        // Create simple glowing grid on the ground (flat, like tiles)
+        const ground = document.querySelector("#ground");
         const gridSize = 100;
         const gridSpacing = 5;
         
-        for (let x = -gridSize/2; x <= gridSize/2; x += gridSpacing) {
-          // Lines along X axis
+        for (let i = -gridSize/2; i <= gridSize/2; i += gridSpacing) {
+          // Lines going left-right (along X axis)
           const lineX = document.createElement("a-plane");
-          lineX.setAttribute("position", `${x} 0 0`);
-          lineX.setAttribute("width", "0.12");
+          lineX.setAttribute("position", `${i} 0 0`);
+          lineX.setAttribute("rotation", "0 0 0");
+          lineX.setAttribute("width", "0.1");
           lineX.setAttribute("height", gridSize);
-          lineX.setAttribute("material", "color: #00ff00; emissive: #00ff00; emissiveIntensity: 2; shader: flat; side: front; depthTest: true; depthWrite: true");
-          gridContainer.appendChild(lineX);
-        }
-        
-        for (let z = -gridSize/2; z <= gridSize/2; z += gridSpacing) {
-          // Lines along Z axis
+          lineX.setAttribute("material", "color: #00ff00; emissive: #00ff00; emissiveIntensity: 2; shader: flat; side: double");
+          ground.appendChild(lineX);
+
+          // Lines going front-back (along Z axis)
           const lineZ = document.createElement("a-plane");
-          lineZ.setAttribute("position", `0 0 ${z}`);
+          lineZ.setAttribute("position", `0 0 ${i}`);
+          lineZ.setAttribute("rotation", "0 0 0");
           lineZ.setAttribute("width", gridSize);
-          lineZ.setAttribute("height", "0.12");
-          lineZ.setAttribute("material", "color: #00ff00; emissive: #00ff00; emissiveIntensity: 2; shader: flat; side: front; depthTest: true; depthWrite: true");
-          gridContainer.appendChild(lineZ);
+          lineZ.setAttribute("height", "0.1");
+          lineZ.setAttribute("material", "color: #00ff00; emissive: #00ff00; emissiveIntensity: 2; shader: flat; side: double");
+          ground.appendChild(lineZ);
         }
-        
-        scene.appendChild(gridContainer);
 
         const descriptions = {
           art0: {

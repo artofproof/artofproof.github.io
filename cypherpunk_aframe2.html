@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>artofproof</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <style>
+      body { margin: 0; background: #000; font-family: monospace; overflow: hidden; }
+    </style>
+  </head>
+  <body>
+    <a-scene cursor="rayOrigin: mouse" raycaster="objects: .raycastable"
+             fog="type: linear; color: #001a00; near: 10; far: 40"
+             background="color: #000000">
+      <a-sky color="#000"></a-sky>
+      <a-plane id="ground" rotation="-90 0 0" width="100" height="100" color="#000"></a-plane>
+      <a-entity id="grid"></a-entity>
+
+      <a-assets>
+        <img id="art0" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/114b7eb2-aa73-4012-a384-dfc5cb8bd0a6.png">
+        <img id="art1" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/205b28f0-a623-48e8-996a-04fd19c9df6a.png">
+        <img id="art2" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/4cd72a9c-ab47-460e-aa98-9dda68d7bfb2.png">
+        <img id="art3" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/8e48651d-fd26-4be3-9cec-7dec14b47bfd.png">
+        <img id="art4" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/e37460ef-dbb5-43a2-b844-d74ebed1c4bf.png">
+        <img id="art5" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/npub1q39st7du4ww4j8tr389nlw0snrwg5ctwvcdsdmhqy3prcesrwjvq6vnzug.png">
+      </a-assets>
+
+      <!-- Gallery -->
+      <a-entity id="gallery" position="0 1.6 -6">
+        <a-entity id="art0-entity" class="raycastable" position="-3 0 0" onclick="showInfo('art0')">
+          <a-plane width="1.25" height="1.65" color="#00ff00" opacity="0.15"></a-plane>
+          <a-plane width="1.2" height="1.6" material="src: #art0; shader: standard; side: double;"></a-plane>
+        </a-entity>
+        <a-entity id="art1-entity" class="raycastable" position="-1.8 0 0" onclick="showInfo('art1')">
+          <a-plane width="1.25" height="1.65" color="#00ff00" opacity="0.15"></a-plane>
+          <a-plane width="1.2" height="1.6" material="src: #art1; shader: standard; side: double;"></a-plane>
+        </a-entity>
+        <a-entity id="art2-entity" class="raycastable" position="-0.6 0 0" onclick="showInfo('art2')">
+          <a-plane width="1.25" height="1.65" color="#00ff00" opacity="0.15"></a-plane>
+          <a-plane width="1.2" height="1.6" material="src: #art2; shader: standard; side: double;"></a-plane>
+        </a-entity>
+        <a-entity id="art3-entity" class="raycastable" position="0.6 0 0" onclick="showInfo('art3')">
+          <a-plane width="1.25" height="1.65" color="#00ff00" opacity="0.15"></a-plane>
+          <a-plane width="1.2" height="1.6" material="src: #art3; shader: standard; side: double;"></a-plane>
+        </a-entity>
+        <a-entity id="art4-entity" class="raycastable" position="1.8 0 0" onclick="showInfo('art4')">
+          <a-plane width="1.25" height="1.65" color="#00ff00" opacity="0.15"></a-plane>
+          <a-plane width="1.2" height="1.6" material="src: #art4; shader: standard; side: double;"></a-plane>
+        </a-entity>
+        <a-entity id="art5-entity" class="raycastable" position="3 0 0" onclick="showInfo('art5')">
+          <a-plane width="1.25" height="1.65" color="#00ff00" opacity="0.15"></a-plane>
+          <a-plane width="1.2" height="1.6" material="src: #art5; shader: standard; side: double;"></a-plane>
+        </a-entity>
+      </a-entity>
+
+      <a-entity id="cameraRig" position="0 1.6 0">
+        <a-entity camera wasd-controls look-controls></a-entity>
+      </a-entity>
+
+      <script>
+        // Grid lines
+        const grid=document.querySelector("#grid");
+        const gridSize=100, spacing=5;
+        for(let i=-gridSize/2;i<=gridSize/2;i+=spacing){
+          const fade=0.25+(1-Math.min(Math.abs(i)/(gridSize/2),1))*0.75;
+          const lineX=document.createElement("a-plane");
+          lineX.setAttribute("position",`${i} 0.01 0`);
+          lineX.setAttribute("rotation","-90 0 0");
+          lineX.setAttribute("width","0.1");
+          lineX.setAttribute("height",gridSize);
+          lineX.setAttribute("material",`color:#00ff00;opacity:${fade};transparent:true;shader:flat`);
+          grid.appendChild(lineX);
+
+          const lineZ=document.createElement("a-plane");
+          lineZ.setAttribute("position",`0 0.01 ${i}`);
+          lineZ.setAttribute("rotation","-90 0 0");
+          lineZ.setAttribute("width",gridSize);
+          lineZ.setAttribute("height","0.1");
+          lineZ.setAttribute("material",`color:#00ff00;opacity:${fade};transparent:true;shader:flat`);
+          grid.appendChild(lineZ);
+        }
+
+        // Click info placeholder
+        function showInfo(id){
+          alert("Clicked: " + id);
+        }
+      </script>
+    </a-scene>
+  </body>
+</html>
+
