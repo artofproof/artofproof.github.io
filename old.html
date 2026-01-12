@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>artofproof</title>
+
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="192x192" href="android-chrome-192x192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+
+    <style>
+      body {
+        margin: 0;
+        background: black;
+        font-family: sans-serif;
+        touch-action: none;
+      }
+      #cornerLogo {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        width: 60px;
+        height: 60px;
+        z-index: 1000;
+      }
+      /* Social icon bar */
+      #socialIcons {
+        position: fixed;
+        top: 10px;
+        left: 70px; /* Adjusted to the right of the main logo */
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        z-index: 1000;
+      }
+      #socialIcons img {
+        width: 24px;
+        height: 24px;
+        filter: brightness(0) invert(1); /* force white for consistency */
+        cursor: pointer;
+        transition: opacity 0.3s;
+      }
+      #socialIcons a:nth-child(1) img { /* This targets the Nostr logo specifically */
+        width: 34px;
+        height: 34px;
+      }
+      #socialIcons a:nth-child(2) img { /* This targets the X logo specifically */
+        width: 16px;
+        height: 16px;
+      }
+      #socialIcons img:hover {
+        opacity: 0.7;
+      }
+      /* Purchase button styling */
+      #purchase-btn {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #f7931a; /* Bitcoin orange */
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 1001;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      #purchase-btn img {
+        width: 20px;
+        height: 20px;
+      }
+      #purchase-btn:hover {
+        background: #ff9900;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="https://artofproof.space/">
+      <img id="cornerLogo" src="invert.png" alt="Logo">
+    </a>
+
+    <div id="socialIcons">
+      <a href="https://primal.net/p/nprofile1qqspdjnvdpk7h9fndtvf95gj3v83gnrpceqyq4cua5jg6yelg4989es4jsdrr" target="_blank">
+        <img src="https://github.com/artofproof/artofproof.github.io/blob/main/nostr.png?raw=true" alt="Nostr">
+      </a>
+      <a href="https://x.com/artofproof" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/X_logo_2023_original.svg" alt="X">
+      </a>
+      <a href="mailto:artofproof@gmail.com">
+        <img src="https://github.com/artofproof/artofproof.github.io/blob/main/mail.png?raw=true" alt="Email">
+      </a>
+      <a href="https://stacker.news/artofproof/all" target="_blank">
+        <img src="https://github.com/artofproof/artofproof.github.io/blob/main/lightning.png?raw=true" alt="Stacker News (Lightning)">
+      </a>
+    </div>
+
+    <button id="purchase-btn" onclick="window.location.href = 'protocolpunisher.html'">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg" alt="₿">
+      Purchase "The Protocol Punisher"
+    </button>
+    <a-scene loading-screen="enabled: false"
+             cursor="rayOrigin: mouse; fuse: false"
+             raycaster="objects: .raycastable">
+
+      <a-plane position="0 3.575 15"
+               rotation="0 180 0"
+               width="8"
+               height="8"
+               material="side: double; transparent: true; opacity: 0;"
+               class="raycastable"
+               onclick="window.open('https://artofproof.space/whitepaper', '_blank')"
+               animation="property: rotation; from: 0 180 0; to: 0 540 0; loop: true; dur: 10000; easing: linear;">
+        <a-plane geometry="primitive: plane; width: 7; height: 7"
+                 material="src: https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/invert.png; side: double; transparent: true"
+                 position="0 0 0"></a-plane>
+      </a-plane>
+
+      <a-assets>
+        <img id="art0" crossorigin="anonymous" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/114b7eb2-aa73-4012-a384-dfc5cb8bd0a6.png">
+        <img id="art1" crossorigin="anonymous" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/205b28f0-a623-48e8-996a-04fd19c9df6a.png">
+        <img id="art2" crossorigin="anonymous" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/4cd72a9c-ab47-460e-aa98-9dda68d7bfb2.png">
+        <img id="art3" crossorigin="anonymous" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/8e48651d-fd26-4be3-9cec-7dec14b47bfd.png">
+        <img id="art4" crossorigin="anonymous" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/e37460ef-dbb5-43a2-b844-d74ebed1c4bf.png">
+        <img id="art5" crossorigin="anonymous" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/npub1q39st7du4ww4j8tr389nlw0snrwg5ctwvcdsdmhqy3prcesrwjvq6vnzug.png">
+
+        <img id="grassTexture" src="https://cdn.pixabay.com/photo/2015/03/26/09/54/grass-690300_1280.jpg">
+        <img id="skyTexture" src="https://cdn.pixabay.com/photo/2016/03/09/09/30/sky-1245953_1280.jpg">
+        <img id="logo" src="artofproof.png">
+      </a-assets>
+
+      <a-sky src="#skyTexture" rotation="0 -90 0"></a-sky>
+
+      <a-plane id="ground" rotation="-90 0 0" width="50" height="50"
+               src="#grassTexture" repeat="25 25"></a-plane>
+
+      <a-entity id="gallery" position="0 1.6 -3">
+        <a-entity id="art0-entity" position="-3 0 0" class="raycastable"
+                  geometry="primitive: plane; width: 0.86; height: 1.16"
+                  material="src: #art0; side: double"
+                  onclick="showInfo('art0')"></a-entity>
+        <a-entity id="art1-entity" position="-1.8 0 0" class="raycastable"
+                  geometry="primitive: plane; width: 0.86; height: 1.16"
+                  material="src: #art1; side: double"
+                  onclick="showInfo('art1')"></a-entity>
+        <a-entity id="art2-entity" position="-0.6 0 0" class="raycastable"
+                  geometry="primitive: plane; width: 0.86; height: 1.16"
+                  material="src: #art2; side: double"
+                  onclick="showInfo('art2')"></a-entity>
+        <a-entity id="art3-entity" position="0.6 0 0" class="raycastable"
+                  geometry="primitive: plane; width: 0.86; height: 1.16"
+                  material="src: #art3; side: double"
+                  onclick="showInfo('art3')"></a-entity>
+        <a-entity id="art4-entity" position="1.8 0 0" class="raycastable"
+                  geometry="primitive: plane; width: 0.86; height: 1.16"
+                  material="src: #art4; side: double"
+                  onclick="showInfo('art4')"></a-entity>
+        <a-entity id="art5-entity" position="3 0 0" class="raycastable"
+                  geometry="primitive: plane; width: 0.86; height: 1.16"
+                  material="src: #art5; side: double"
+                  onclick="showInfo('art5')"></a-entity>
+      </a-entity>
+
+      <a-entity id="infoPanel" visible="false">
+        <a-plane id="info-img" position="-3 10 -10" width="5" height="6"
+                 material="src: #art0; side: double"></a-plane>
+
+        <a-text id="info-text" value="" position="3 12 -10" align="left"
+                width="12" color="white" wrap-count="60"></a-text>
+
+        <a-entity id="info-link-entity" position="3 10 -10" class="raycastable"
+                  geometry="primitive: plane; height: 0.4; width: 9"
+                  material="transparent: true; opacity: 0">
+          <a-text id="info-link" value="" align="left"
+                  width="9" color="#a020f0"
+                  animation="property: color; dir: alternate; dur: 800; loop: true; to: #ff00ff">
+          </a-text>
+        </a-entity>
+      </a-entity>
+
+      <a-entity id="cameraRig" position="0 1.6 0">
+        <a-entity id="camera" camera wasd-controls
+                  look-controls="pointerLockEnabled: false; touchEnabled: true; magicWindowTrackingEnabled: true;">
+        </a-entity>
+      </a-entity>
+
+      <script>
+        const infoPanel = document.querySelector("#infoPanel");
+        const infoText = document.querySelector("#info-text");
+        const infoLink = document.querySelector("#info-link");
+        const infoLinkEntity = document.querySelector("#info-link-entity");
+        const infoImg = document.querySelector("#info-img");
+        const purchaseBtn = document.getElementById("purchase-btn");
+
+        const descriptions = {
+          art0: {
+            text: "The Protocol Punisher - Just as Frank Castle wages an unyielding war against crime and corruption, Bitcoin’s protocol enforces the incorruptible rules of a new financial order. There are no plea bargains, no backroom deals, no central authority to bend its will — only the impartial law of mathematics. The Punisher’s relentless pursuit of justice mirrors the Bitcoin whitepaper’s vision: a system where fraud is exposed, trust is unnecessary, and every transaction is judged without prejudice.",
+            link: "https://nosta.me/npub14u6x8fd4kfh3ygzrnh5ny4qyeeggswr55v0z93hdme8qttvm2t9qwk9jme",
+            npub: "npub14u6x8fd4kfh3ygzrnh5ny4qyeeggswr55v0z93hdme8qttvm2t9qwk9jme"
+          },
+          art1: {
+            text: "Cipher Punk Exodus - In Cipher Punk Exodus, the chaotic energy of AKIRA’s Neo-Tokyo collides with the radical vision of Bitcoin’s whitepaper. Just as Kaneda and his crew fought against corrupt systems of power, the cypherpunks engineered a rebellion in code—an exodus from centralized control into a world governed by mathematics and peer-to-peer consensus. The artwork captures that raw transition, where neon-soaked streets echo with the hum of defiance, and every block mined is a strike against oppression.",
+            link: "https://nosta.me/npub1vjck0yzrhzn4p04a9354nz3zsnrf0stmuu0a2nknrwjevmun2d2s6cmral",
+            npub: "npub1vjck0yzrhzn4p04a9354nz3zsnrf0stmuu0a2nknrwjevmun2d2s6cmral"
+          },
+          art2: {
+            text: "Code of Law - channels the spirit of Judge Dredd as the embodiment of Bitcoin’s unbreakable rules. In the Bitcoin whitepaper, consensus acts as the supreme authority — a protocol that cannot be bribed, corrupted, or persuaded. Like Dredd himself, the network enforces its law with precision and finality, ensuring that no transaction outside the rules can ever stand. This artwork captures that stark truth: in Bitcoin, justice is not human but mathematical, not arbitrary but absolute. The code is the law, and the law is incorruptible.",
+            link: "https://nosta.me/npub1ppfv7rd6gq38jp6n3elgl6yydmtydp2zcjv32cgp9zyvcttpz59q7v7xrx",
+            npub: "npub1ppfv7rd6gq38jp6n3elgl6yydmtydp2zcjv32cgp9zyvcttpz59q7v7xrx"
+          },
+          art3: {
+            text: "Cryptographic Cleaner - The Cryptographic Cleaner embodies the spirit of Bitcoin’s whitepaper, a solitary figure who eliminates the need for trust, enforcing peer to peer truth with quiet precision. He operates in the shadows, guided by discipline and code, protecting the integrity of a system built to outlast its enemies.",
+            link: "https://nosta.me/npub16frw5ph96ksktwjr73s8gy85aueswl3ts4uffdjrqq283wnltqqquet8sp",
+            npub: "npub16frw5ph96ksktwjr73s8gy85aueswl3ts4uffdjrqq283wnltqqquet8sp"
+          },
+          art4: {
+            text: "Protocol Enforcer - A composed figure stares ahead, Bitcoin reflected in his eyes, representing the protocol’s unwavering vigilance. The image captures the strength and resilience of the network, where cryptography and consensus work together to secure an immutable ledger, standing guard over the flow of digital value.",
+            link: "https://nosta.me/npub16pg9ahu5el742q59ntnr0rwgwcffem4awjl2gxsguanvea0hk2ssrzjjsk",
+            npub: "npub16pg9ahu5el742q59ntnr0rwgwcffem4awjl2gxsguanvea0hk2ssrzjjsk"
+          },
+          art5: {
+            text: "Orphan from Hell - Orphan from Hell is a fierce, symbolic portrayal of rebellion and rejection, drawing inspiration from the concept of 'orphan blocks' in the Bitcoin whitepaper. The image features a demonic figure with glowing Bitcoin eyes, a broken horn, and a massive weapon, embodying the spirit of the outcast, rejected by consensus but burning with purpose. Raw and intense, this antihero channels the energy of those who fight from the fringes, wielding conviction like a weapon in a world that tried to leave them behind.",
+            link: "https://nosta.me/npub1q39st7du4ww4j8tr389nlw0snrwg5ctwvcdsdmhqy3prcesrwjvq6vnzug",
+            npub: "npub1q39st7du4ww4j8tr39nlw0snrwg5ctwvcdsdmhqy3prcesrwjvq6vnzug"
+          }
+        };
+
+        function showInfo(id) {
+          infoImg.setAttribute("material", "src: #" + id + "; side: double");
+
+          if (descriptions[id]) {
+            infoText.setAttribute("value", descriptions[id].text);
+            infoLink.setAttribute("value", descriptions[id].npub);
+            infoLinkEntity.onclick = () => {
+              if (descriptions[id].link) window.open(descriptions[id].link, "_blank");
+            };
+
+            // Show purchase button only for Protocol Punisher
+            if (id === "art0") {
+              purchaseBtn.style.display = "flex";
+            } else {
+              purchaseBtn.style.display = "none";
+            }
+          } else {
+            infoText.setAttribute("value", "");
+            infoLink.setAttribute("value", "");
+            infoLinkEntity.onclick = null;
+            purchaseBtn.style.display = "none";
+          }
+
+          infoPanel.setAttribute("visible", "true");
+        }
+
+        function hideInfo() { 
+          infoPanel.setAttribute("visible", "false"); 
+          purchaseBtn.style.display = "none";
+        }
+
+        window.addEventListener('keydown', (e) => { if (e.key === "Escape") { hideInfo(); } });
+      </script>
+    </a-scene>
+  </body>
+</html>

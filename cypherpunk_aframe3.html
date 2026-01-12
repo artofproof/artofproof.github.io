@@ -201,7 +201,7 @@
     <a-scene loading-screen="enabled: false"
              cursor="rayOrigin: mouse; fuse: false"
              raycaster="objects: .raycastable"
-             fog="type: linear; color: #000510; near: 10; far: 40">
+             fog="type: linear; color: #001a00; near: 10; far: 40">
 
       <!-- Rotating logo -->
       <a-plane position="0 3.575 15"
@@ -226,8 +226,8 @@
         <img id="art5" crossorigin="anonymous" src="https://raw.githubusercontent.com/artofproof/artofproof.github.io/main/art/images/npub1q39st7du4ww4j8tr389nlw0snrwg5ctwvcdsdmhqy3prcesrwjvq6vnzug.png">
       </a-assets>
 
-      <!-- Deep space blue sky -->
-      <a-sky color="#000510"></a-sky>
+      <!-- Dark sky -->
+      <a-sky color="#000a00"></a-sky>
 
       <!-- Stars -->
       <a-entity id="stars"></a-entity>
@@ -366,40 +366,23 @@
 
         // Create stars
         const starsContainer = document.querySelector("#stars");
-        for (let i = 0; i < 400; i++) {
+        for (let i = 0; i < 200; i++) {
           const star = document.createElement("a-sphere");
-          const x = (Math.random() - 0.5) * 300;
-          const y = Math.random() * 150 + 20;
-          const z = (Math.random() - 0.5) * 300;
-          const size = Math.random() * 0.4 + 0.1;
-          const brightness = Math.random();
-          
-          // Mix of white, blue, and slightly cyan stars
-          let color, emissive, intensity;
-          if (brightness > 0.7) {
-            color = "#ffffff";
-            emissive = "#aaddff";
-            intensity = Math.random() * 3 + 2;
-          } else if (brightness > 0.4) {
-            color = "#ccddff";
-            emissive = "#6699ff";
-            intensity = Math.random() * 2 + 1;
-          } else {
-            color = "#99bbff";
-            emissive = "#4477bb";
-            intensity = Math.random() * 1.5 + 0.5;
-          }
+          const x = (Math.random() - 0.5) * 200;
+          const y = Math.random() * 100 + 20;
+          const z = (Math.random() - 0.5) * 200;
+          const size = Math.random() * 0.3 + 0.1;
           
           star.setAttribute("position", `${x} ${y} ${z}`);
           star.setAttribute("radius", size);
-          star.setAttribute("material", `color: ${color}; emissive: ${emissive}; emissiveIntensity: ${intensity}`);
+          star.setAttribute("material", "color: #ffffff; emissive: #00ff00; emissiveIntensity: " + (Math.random() * 2 + 1));
           starsContainer.appendChild(star);
         }
 
         // Create simple glowing grid on the ground (flat on floor only)
         const scene = document.querySelector("a-scene");
         const gridContainer = document.createElement("a-entity");
-        gridContainer.setAttribute("position", "0 0.02 0");
+        gridContainer.setAttribute("position", "0 0 0");
         gridContainer.setAttribute("rotation", "-90 0 0");
         
         const gridSize = 100;
@@ -409,9 +392,9 @@
           // Lines along X axis
           const lineX = document.createElement("a-plane");
           lineX.setAttribute("position", `${x} 0 0`);
-          lineX.setAttribute("width", "0.12");
+          lineX.setAttribute("width", "0.1");
           lineX.setAttribute("height", gridSize);
-          lineX.setAttribute("material", "color: #00ff00; emissive: #00ff00; emissiveIntensity: 2; shader: flat; side: front; depthTest: true; depthWrite: true");
+          lineX.setAttribute("material", "color: #00ff00; emissive: #00ff00; emissiveIntensity: 2; shader: flat; side: double");
           gridContainer.appendChild(lineX);
         }
         
@@ -420,8 +403,8 @@
           const lineZ = document.createElement("a-plane");
           lineZ.setAttribute("position", `0 0 ${z}`);
           lineZ.setAttribute("width", gridSize);
-          lineZ.setAttribute("height", "0.12");
-          lineZ.setAttribute("material", "color: #00ff00; emissive: #00ff00; emissiveIntensity: 2; shader: flat; side: front; depthTest: true; depthWrite: true");
+          lineZ.setAttribute("height", "0.1");
+          lineZ.setAttribute("material", "color: #00ff00; emissive: #00ff00; emissiveIntensity: 2; shader: flat; side: double");
           gridContainer.appendChild(lineZ);
         }
         
