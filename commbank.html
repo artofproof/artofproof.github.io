@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b5c3f">
+<title>Safe Bank: CommBank</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Same look as safebank.html: one wide column, big type, big buttons. */
+:root{
+  --bg:#f6f4ee; --card:#ffffff; --fg:#1c1b18; --muted:#5a574f; --line:#d9d5c9;
+  --accent:#0b5c3f; --accent-fg:#ffffff; --accent-soft:#e2efe8; --focus:#d97b00;
+  --good:#0b5c3f; --good-soft:#e2efe8; --bad:#a3271b; --bad-soft:#fbe6e3;
+  --font:"Atkinson Hyperlegible",Verdana,Arial,sans-serif; --mono:"Courier New",monospace;
+  --base:22px; color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#15171a; --card:#1f2226; --fg:#f2f0ea; --muted:#b5b1a6; --line:#3a3e44;
+  --accent:#58c295; --accent-fg:#0d1a14; --accent-soft:#1d3329; --focus:#ffb14d;
+  --good:#58c295; --good-soft:#1d3329; --bad:#ff8a7a; --bad-soft:#3a1f1c; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#15171a; --card:#1f2226; --fg:#f2f0ea; --muted:#b5b1a6; --line:#3a3e44;
+  --accent:#58c295; --accent-fg:#0d1a14; --accent-soft:#1d3329; --focus:#ffb14d;
+  --good:#58c295; --good-soft:#1d3329; --bad:#ff8a7a; --bad-soft:#3a1f1c; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:var(--base);line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 60px}
+.wrap{max-width:900px;margin:0 auto}
+h1{font-size:2em;margin:0;line-height:1.1;text-wrap:balance}
+h2{font-size:1.35em;margin:0 0 10px;line-height:1.2}
+h3{font-size:1.05em;margin:18px 0 6px}
+p{margin:0 0 12px}
+header{padding-block:28px 10px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.tag{color:var(--muted);font-size:.85em;margin-top:6px}
+.tools{display:flex;gap:10px;flex-wrap:wrap}
+button,.go{font:inherit;cursor:pointer;border-radius:14px;min-height:60px;padding:0 22px;font-weight:700}
+.btn{background:var(--card);color:var(--fg);border:3px solid var(--line)}
+button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:5px solid var(--focus);outline-offset:3px}
+a{color:var(--accent);text-underline-offset:3px}
+
+.card{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:22px 24px;margin-top:18px}
+.bank{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:18px;align-items:center}
+.icon{width:84px;height:84px;border-radius:20px;display:grid;place-items:center;background:#1c1b18;overflow:hidden}
+.icon img{width:72%;height:72%;object-fit:contain;border-radius:10px;background:#fff;padding:5px}
+.icon .fallback{display:none;color:#fff;font-weight:700;font-size:1.2em}
+.icon.no-logo img{display:none}.icon.no-logo .fallback{display:block}
+.name{font-size:1.25em;font-weight:700;line-height:1.2}
+.sub{color:var(--muted);font-size:.8em;font-weight:400;margin-top:4px}
+.go{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:var(--accent-fg);text-decoration:none;border:3px solid var(--accent);white-space:nowrap}
+.go svg{width:26px;height:26px}
+.facts{grid-column:1/-1;border-top:2px solid var(--line);padding-top:14px;display:grid;gap:12px;font-size:.85em;color:var(--muted)}
+.mono{font-family:var(--mono);word-break:break-all;color:var(--fg);font-size:.95em}
+.hash{letter-spacing:.02em}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.small{min-height:46px;padding:0 16px;font-size:.8em}
+
+.steps{margin:0;padding-left:1.4em}
+.steps li{margin-bottom:8px}
+.checker label{display:block;font-weight:700;margin-bottom:8px}
+.checker input{width:100%;font:inherit;font-family:var(--mono);font-size:.8em;padding:14px 16px;border:3px solid var(--line);border-radius:14px;background:var(--bg);color:var(--fg)}
+.checker input:focus{border-color:var(--accent)}
+.result{margin-top:14px;border-radius:14px;padding:14px 18px;font-size:.9em;display:none}
+.result.show{display:block}
+.result.good{background:var(--good-soft);border:2px solid var(--good)}
+.result.bad{background:var(--bad-soft);border:2px solid var(--bad)}
+.result strong{display:block;font-size:1.1em}
+.result .mono{display:block;margin-top:6px;font-size:.85em}
+
+.sites{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:10px}
+.sites li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 14px;align-items:center;border:2px solid var(--line);border-radius:14px;padding:12px 16px}
+.sites a.site{font-weight:700}
+.sites .note{grid-column:1;color:var(--muted);font-size:.78em}
+.sites .badge{grid-row:1/span 2;grid-column:2;font-size:.7em;font-weight:700;border-radius:999px;padding:4px 12px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+
+pre{margin:6px 0 0;background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:12px 14px;overflow-x:auto;font-family:var(--mono);font-size:.72em;line-height:1.4;white-space:pre-wrap;word-break:break-all}
+details{border-top:2px solid var(--line);padding-top:10px;margin-top:10px}
+details summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+
+.yes,.no{border-radius:14px;padding:14px 18px;margin-top:10px}
+.yes{background:var(--good-soft)}
+.no{background:var(--bad-soft)}
+.yes strong,.no strong{display:block}
+.yes ul,.no ul{margin:6px 0 0;padding-left:1.2em}
+.tip{margin-top:18px;background:var(--accent-soft);border-radius:20px;padding:22px 24px;font-size:.95em}
+.tip strong{display:block;font-size:1.1em;margin-bottom:6px}
+.tip ul{margin:6px 0 0;padding-left:1.2em}
+footer{margin-top:28px;color:var(--muted);font-size:.72em}
+
+@media (max-width:600px){
+  :root{--base:19px}
+  .bank{grid-template-columns:64px minmax(0,1fr)}
+  .icon{width:64px;height:64px;border-radius:16px}
+  .go{grid-column:1/-1;justify-content:center;width:100%}
+  .card{padding:18px 16px}
+  .sites li{grid-template-columns:1fr}
+  .sites .badge{grid-row:auto;grid-column:1;justify-self:start}
+  header{padding-top:18px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Safe Bank: CommBank</h1>
+      <div class="tag">Commonwealth Bank NetBank login, checked 12 November 2026</div>
+    </div>
+    <div class="tools">
+      <button class="btn" id="smaller" type="button" aria-label="Smaller text">A&minus;</button>
+      <button class="btn" id="bigger" type="button" aria-label="Bigger text">A+</button>
+    </div>
+  </header>
+
+  <!-- The one link -->
+  <section class="card bank" aria-label="CommBank login">
+    <div class="icon" aria-hidden="true"><img id="logo" src="https://commbank.com.au/apple-touch-icon.png" alt="" referrerpolicy="no-referrer"><span class="fallback">CBA</span></div>
+    <div class="name">CommBank NetBank<div class="sub">Commonwealth Bank of Australia</div></div>
+    <a class="go" id="go" href="" target="_blank" rel="noopener">Log in to NetBank <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+    <div class="facts">
+      <div>Address: <span class="mono" id="url"></span></div>
+      <div>Its SHA-256 fingerprint: <span class="mono hash" id="hash"></span></div>
+      <div class="row">
+        <button class="btn small" type="button" data-copy="url">Copy address</button>
+        <button class="btn small" type="button" data-copy="hash">Copy fingerprint</button>
+      </div>
+      <div>After you click, CommBank sends you on to <span class="mono">netbank.web.commbank.com.au</span>. That is normal.</div>
+    </div>
+  </section>
+
+  <!-- Plain-English explainer -->
+  <section class="card">
+    <h2>What is this long string of letters and numbers?</h2>
+    <p>It is a <strong>fingerprint</strong> of the web address above. The proper name is a <em>SHA-256 hash</em>, sometimes called a <em>checksum</em>.</p>
+    <p>A hash works like a blender for text. Put in the exact same text and you always get the exact same 64 characters out. Change even one letter, one dot, or add a space, and you get a completely different result. You also can't run it backwards to turn the fingerprint into the address.</p>
+    <p>So the fingerprint lets you check that the address on this page hasn't been changed. Nobody has to take our word for it, because anyone can make the fingerprint themselves and compare.</p>
+
+    <div class="yes">
+      <strong>If the fingerprints match, you know:</strong>
+      <ul>
+        <li>The address you checked is exactly, character for character, the one we published.</li>
+        <li>Nobody has swapped in a look-alike address, such as <span class="mono">commbank-login.com</span> or <span class="mono">cornmbank.com.au</span> (an "rn" in place of the "m").</li>
+      </ul>
+    </div>
+    <div class="no">
+      <strong>A match does not tell you:</strong>
+      <ul>
+        <li>That this page itself is genuine. If someone copied this whole page and changed both the address and the fingerprint, they would still match each other. That is why you should compare against a fingerprint from <em>somewhere else</em>, like a printout you were given or a trusted friend's copy.</li>
+        <li>That your computer or phone is free of viruses.</li>
+        <li>That CommBank hasn't moved its login page since we checked it.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Built-in checker -->
+  <section class="card checker">
+    <h2>Check it right here</h2>
+    <p>Paste or type any web address below. This page works out its fingerprint on your own device (nothing is sent anywhere) and tells you whether it matches.</p>
+    <label for="check">Address to check</label>
+    <input id="check" type="text" spellcheck="false" autocomplete="off" autocapitalize="off">
+    <div class="row" style="margin-top:10px">
+      <button class="btn small" type="button" id="reset">Put the CommBank address back</button>
+    </div>
+    <div class="result" id="result" role="status" aria-live="polite"></div>
+  </section>
+
+  <!-- External sites -->
+  <section class="card">
+    <h2>Check it on another website</h2>
+    <p>Don't want to trust this page's own checker? Use someone else's. These are free, well-known tools run by other people, so they're independent of us.</p>
+    <ol class="steps">
+      <li>Press <strong>Copy address</strong> at the top of this page.</li>
+      <li>Open one of the sites below and paste the address into its box. Make sure there's no space or blank line before or after it.</li>
+      <li>Choose <strong>SHA-256</strong> if it asks. (Not SHA-1, SHA-512 or MD5. Those are different.)</li>
+      <li>Compare its answer with our fingerprint. It's enough to check the first 6 and last 6 characters. Capital or small letters don't matter.</li>
+    </ol>
+    <ul class="sites" id="sites"></ul>
+    <p style="margin-top:14px;font-size:.8em;color:var(--muted)">Pasting a bank's <em>web address</em> into these sites is harmless, because it's public information. <strong>Never</strong> paste your password, card number or anything private into them.</p>
+  </section>
+
+  <!-- Command line -->
+  <section class="card">
+    <h2>Check it on your own computer</h2>
+    <p>For the most independent check, use the tools already built into your computer. No website involved at all. Copy the line for your system, paste it in, and press Enter.</p>
+
+    <details>
+      <summary>Windows (PowerShell)</summary>
+      <p style="font-size:.85em">Press the Start button, type <strong>PowerShell</strong>, open it, then paste this:</p>
+      <pre id="cmd-win"></pre>
+      <div class="row" style="margin-top:8px"><button class="btn small" type="button" data-copy="cmd-win">Copy command</button></div>
+    </details>
+    <details>
+      <summary>Mac (Terminal)</summary>
+      <p style="font-size:.85em">Press Command + Space, type <strong>Terminal</strong>, open it, then paste this:</p>
+      <pre id="cmd-mac"></pre>
+      <div class="row" style="margin-top:8px"><button class="btn small" type="button" data-copy="cmd-mac">Copy command</button></div>
+    </details>
+    <details>
+      <summary>Linux (Terminal)</summary>
+      <pre id="cmd-linux"></pre>
+      <div class="row" style="margin-top:8px"><button class="btn small" type="button" data-copy="cmd-linux">Copy command</button></div>
+    </details>
+
+    <h3>Got a different answer?</h3>
+    <p style="font-size:.9em">The most common cause is an invisible extra line break at the end. If you got a fingerprint starting <span class="mono">e05ee8</span>, that's what happened. Use the exact commands above (they use <span class="mono">printf</span>, not <span class="mono">echo</span>), or on a website make sure there's nothing after the last letter.</p>
+  </section>
+
+  <div class="tip">
+    <strong>How to stay safe with CommBank</strong>
+    <ul>
+      <li>Only use the green button on this page, or the CommBank app, to log in. Never follow a link from a text message or email, even if it looks real.</li>
+      <li>CommBank will never ask for your password, NetBank code or full card number by phone, text or email.</li>
+      <li>Something feel off? Hang up and call CommBank yourself on <strong>13 2221</strong> (or the number on the back of your card).</li>
+      <li>Report a scam: <a href="https://www.commbank.com.au/support/security/how-to-report-a-scam.html" target="_blank" rel="noopener">CommBank's "How to report a scam" page</a> or <a href="https://www.scamwatch.gov.au/" target="_blank" rel="noopener">Scamwatch</a>.</li>
+    </ul>
+  </div>
+
+  <footer>Not affiliated with or endorsed by the Commonwealth Bank of Australia. The address was checked by following CommBank's own "Log on" button. The fingerprint is a SHA-256 hash of the address text exactly as shown, with no line break at the end. A matching fingerprint shows the address hasn't been changed. It does not prove a website is genuine or safe. The external tools listed are run by third parties.</footer>
+</div>
+
+<script>
+const URL_TEXT='https://www.my.commbank.com.au/netbank/Logon/Logon.aspx';
+const HASH='d3da20dd52a4c9b791ef992d85af7a17739db092354d4fb858a94e2873f7786b';
+const $=id=>document.getElementById(id);
+
+$('go').href=URL_TEXT;$('url').textContent=URL_TEXT;$('hash').textContent=HASH;
+$('logo').addEventListener('error',()=>$('logo').parentElement.classList.add('no-logo'));
+
+// Commands for checking on your own machine. printf (not echo) so no trailing newline is hashed.
+$('cmd-win').textContent="$s='"+URL_TEXT+"'; -join ([Security.Cryptography.SHA256]::Create().ComputeHash([Text.Encoding]::UTF8.GetBytes($s)) | ForEach-Object { $_.ToString('x2') })";
+$('cmd-mac').textContent="printf '%s' '"+URL_TEXT+"' | shasum -a 256";
+$('cmd-linux').textContent="printf '%s' '"+URL_TEXT+"' | sha256sum";
+
+// Independent SHA-256 tools. "prefilled" ones receive the address in their link; the rest need a paste.
+const b64=btoa(URL_TEXT).replace(/=+$/,'');
+const SITES=[
+  {n:'CyberChef',by:'UK Government Communications Headquarters (GCHQ)',u:"https://gchq.github.io/CyberChef/#recipe=SHA2('256',64,160)&input="+b64,pre:true},
+  {n:'MD5Calc',by:'md5calc.com',u:'https://md5calc.com/hash/sha256/'+encodeURIComponent(URL_TEXT),pre:true},
+  {n:'Online Tools',by:'emn178, open source on GitHub',u:'https://emn178.github.io/online-tools/sha256.html'},
+  {n:'DenCode',by:'dencode.com',u:'https://dencode.com/en/hash/sha256'},
+  {n:'IT Tools: Hash text',by:'it-tools.tech, open source',u:'https://it-tools.tech/hash-text'},
+  {n:'Browserling SHA-256',by:'browserling.com',u:'https://www.browserling.com/tools/sha256-hash'},
+  {n:'Code Beautify',by:'codebeautify.org',u:'https://codebeautify.org/sha256-hash-generator'},
+  {n:'KeyCDN SHA-256 Generator',by:'tools.keycdn.com',u:'https://tools.keycdn.com/sha256-online-generator'},
+  {n:'Xorbin SHA-256 Calculator',by:'xorbin.com',u:'https://www.xorbin.com/tools/sha256-hash-calculator'},
+  {n:'ConvertString',by:'convertstring.com',u:'https://www.convertstring.com/Hash/SHA256'},
+  {n:'SHA Generator',by:'liavaag.org',u:'https://www.liavaag.org/English/SHA-Generator/'}
+];
+$('sites').innerHTML=SITES.map(s=>`<li><a class="site" href="${s.u}" target="_blank" rel="noopener noreferrer">${s.n}</a><span class="badge">${s.pre?'Address filled in for you':'Paste the address'}</span><span class="note">${s.by}</span></li>`).join('');
+
+// Built-in checker, using the browser's own SHA-256 (Web Crypto).
+const check=$('check'),result=$('result');
+async function sha256(text){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function runCheck(){
+  const text=check.value;
+  if(!text){result.className='result';return}
+  if(!(window.crypto&&crypto.subtle)){result.className='result show bad';result.innerHTML='<strong>This browser can\'t do the check here.</strong>Use one of the websites or computer commands below instead.';return}
+  const h=await sha256(text);
+  if(check.value!==text)return;
+  const ok=h===HASH;
+  const trimmed=!ok&&text.trim()!==text&&(await sha256(text.trim()))===HASH;
+  result.className='result show '+(ok?'good':'bad');
+  result.innerHTML=(ok?'<strong>✓ Match. This is the address we published.</strong>'
+    :trimmed?'<strong>✗ No match, but only because of extra spaces or a line break.</strong>Remove anything before or after the address and it will match.'
+    :'<strong>✗ No match. This is not the address we published.</strong>Don\'t use it to log in.')
+    +'<span class="mono">Fingerprint: '+h+'</span>';
+}
+check.addEventListener('input',runCheck);
+$('reset').onclick=()=>{check.value=URL_TEXT;runCheck()};
+check.value=URL_TEXT;runCheck();
+
+// Copy buttons
+function copy(btn,id){
+  const el=$(id),text=el.textContent,old=btn.textContent;
+  const done=msg=>{btn.textContent=msg;setTimeout(()=>btn.textContent=old,2000)};
+  const fallback=()=>{const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r);done('Selected, press Ctrl+C')};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(()=>done('Copied'),fallback);else fallback();
+}
+document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>copy(b,b.dataset.copy));
+
+// Text size, shared with safebank.html
+let size=22;try{size=parseInt(localStorage.getItem('sbl-size'))||22}catch(e){}
+function applySize(){document.documentElement.style.setProperty('--base',size+'px');try{localStorage.setItem('sbl-size',size)}catch(e){}}
+$('bigger').onclick=()=>{size=Math.min(34,size+3);applySize()};
+$('smaller').onclick=()=>{size=Math.max(16,size-3);applySize()};
+applySize();
+</script>
+</body>
+</html>
